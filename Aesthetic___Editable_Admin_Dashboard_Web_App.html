@@ -1,0 +1,3373 @@
+<!DOCTYPE html>
+<html lang="en-GB" data-theme="light" data-accent="blue" data-radius="square" data-density="comfortable">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="dashboard">
+  <meta name="design-style" content="carbon">
+  <title>Meridian Admin — Operations &amp; CMS Control Console</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@1.43.0/dist/umd/lucide.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
+
+  <style>
+    :root {
+      color-scheme: light;
+
+      /* 1. Carbon Light Tokens */
+      --background: #ffffff;
+      --surface-container-low: #f4f4f4;
+      --surface-container: #f4f4f4;
+      --surface-container-high: #e0e0e0;
+
+      --on-surface: #161616;
+      --on-surface-variant: #525252;
+
+      --outline: #8d8d8d;
+      --outline-variant: #e0e0e0;
+
+      --primary: #0f62fe;
+      --on-primary: #ffffff;
+      --primary-container: #d0e2ff;
+      --on-primary-container: #161616;
+      --secondary: #6f6f6f;
+      --tertiary: #198038;
+      --error: #da1e28;
+      --on-error: #ffffff;
+
+      /* Data series */
+      --data-1: #0f62fe;
+      --data-2: #6929c4;
+      --data-3: #005d5d;
+      --data-4: #9f1853;
+      --data-context: #8d8d8d;
+
+      /* Accent Swatches */
+      --swatch-blue: #0f62fe;
+      --swatch-teal: #005d5d;
+      --swatch-violet: #6929c4;
+      --swatch-emerald: #198038;
+
+      /* Fonts */
+      --font-headline: 'IBM Plex Sans', sans-serif;
+      --font-body: 'IBM Plex Sans', sans-serif;
+      --font-label: 'IBM Plex Mono', monospace;
+
+      /* Shape */
+      --rounded: 0.125rem;
+      --rounded-lg: 0.25rem;
+      --rounded-full: 0.75rem;
+      --surface-radius: 0px;
+      --control-radius: 0px;
+
+      /* Effects */
+      --shadow-1: 0 2px 6px rgb(0 0 0 / 0.1);
+      --shadow-2: 0 4px 12px rgb(0 0 0 / 0.12);
+      --rule: 1px solid var(--outline-variant);
+      --field-rule: 1px solid var(--outline);
+      --indicator: 2px solid var(--primary);
+
+      /* 2. Shared & Semantic Tokens */
+      --positive: #198038;
+      --positive-bg: #defbe6;
+      --on-positive-bg: #0e6027;
+      --warning: #b28600;
+      --warning-bg: #fcf4d6;
+      --on-warning-bg: #543e00;
+      --error-bg: #fff1f1;
+      --on-error-bg: #750e13;
+      --focus: var(--primary);
+      --primary-hover: color-mix(in srgb, var(--primary), var(--on-surface) 22%);
+
+      /* Dashboard Type Scale */
+      --display-size: clamp(1.75rem, 1.4rem + 1.2vw, 2.25rem);
+      --headline-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+      --subhead-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+      --body-size: clamp(0.9375rem, 0.9rem + 0.15vw, 1rem);
+      --label-size: 0.75rem;
+
+      /* Spacing Scale (4pt base) */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.5rem;
+      --space-2xl: 4rem;
+      --space-3xl: 6rem;
+
+      /* Density */
+      --cell-pad-y: 0.75rem;
+      --cell-pad-x: 0.875rem;
+
+      /* Motion */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-micro: 120ms;
+      --dur-short: 220ms;
+      --dur-long: 420ms;
+    }
+
+    /* Carbon Dark Adaptation */
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --background: #161616;
+      --surface-container-low: #262626;
+      --surface-container: #262626;
+      --surface-container-high: #393939;
+      --on-surface: #f4f4f4;
+      --on-surface-variant: #c6c6c6;
+      --outline: #6f6f6f;
+      --outline-variant: #393939;
+      --primary: #78a9ff;
+      --on-primary: #161616;
+      --primary-container: #002d9c;
+      --on-primary-container: #edf5ff;
+      --secondary: #a8a8a8;
+      --tertiary: #42be65;
+      --error: #ff8389;
+      --on-error: #161616;
+      --data-1: #78a9ff;
+      --data-2: #be95ff;
+      --data-3: #08bdba;
+      --data-4: #ff7eb6;
+      --data-context: #6f6f6f;
+      --positive: #42be65;
+      --positive-bg: #071908;
+      --on-positive-bg: #6fdc8c;
+      --warning: #f1c21b;
+      --warning-bg: #261b00;
+      --on-warning-bg: #fddc69;
+      --error-bg: #2d0709;
+      --on-error-bg: #ffb3b8;
+      --shadow-1: 0 2px 8px rgb(0 0 0 / 0.45);
+      --shadow-2: 0 6px 16px rgb(0 0 0 / 0.55);
+      --primary-hover: color-mix(in srgb, var(--primary), #ffffff 18%);
+    }
+
+    /* Designable Accent Tokens — Light */
+    :root[data-accent="teal"] {
+      --primary: #005d5d;
+      --primary-container: #9ef0f0;
+      --on-primary-container: #002b2b;
+      --data-1: #005d5d;
+      --data-3: #0f62fe;
+    }
+    :root[data-accent="violet"] {
+      --primary: #6929c4;
+      --primary-container: #e8daff;
+      --on-primary-container: #1c0f30;
+      --data-1: #6929c4;
+      --data-2: #0f62fe;
+    }
+    :root[data-accent="emerald"] {
+      --primary: #198038;
+      --primary-container: #defbe6;
+      --on-primary-container: #044317;
+      --data-1: #198038;
+      --data-2: #0f62fe;
+    }
+
+    /* Designable Accent Tokens — Dark */
+    :root[data-theme="dark"][data-accent="teal"] {
+      --primary: #08bdba;
+      --on-primary: #081a1a;
+      --primary-container: #004144;
+      --on-primary-container: #9ef0f0;
+      --data-1: #08bdba;
+      --data-3: #78a9ff;
+    }
+    :root[data-theme="dark"][data-accent="violet"] {
+      --primary: #be95ff;
+      --on-primary: #161616;
+      --primary-container: #31135e;
+      --on-primary-container: #e8daff;
+      --data-1: #be95ff;
+      --data-2: #78a9ff;
+    }
+    :root[data-theme="dark"][data-accent="emerald"] {
+      --primary: #42be65;
+      --on-primary: #041d0c;
+      --primary-container: #0e6027;
+      --on-primary-container: #defbe6;
+      --data-1: #42be65;
+      --data-2: #78a9ff;
+    }
+
+    /* Designable Corner & Density Tokens */
+    :root[data-radius="square"] {
+      --surface-radius: 0px;
+      --control-radius: 0px;
+    }
+    :root[data-radius="crisp"] {
+      --surface-radius: 0.25rem;
+      --control-radius: 0.125rem;
+    }
+    :root[data-radius="soft"] {
+      --surface-radius: 0.5rem;
+      --control-radius: 0.375rem;
+    }
+    :root[data-density="compact"] {
+      --cell-pad-y: 0.45rem;
+      --cell-pad-x: 0.65rem;
+    }
+
+    /* Base Reset */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      overflow-x: clip;
+      margin: 0;
+      padding: 0;
+      background-color: var(--background);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color var(--dur-short) var(--ease-in-out), color var(--dur-short) var(--ease-in-out);
+    }
+    header { position: static !important; }
+
+    /* Focus Rings */
+    :focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    button, input, select, textarea {
+      font-family: inherit;
+      font-size: inherit;
+      color: inherit;
+    }
+
+    /* App Shell Layout */
+    .app-shell {
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
+      min-height: 100vh;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    /* Top Header */
+    .topbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+      padding: var(--space-md) var(--space-lg);
+      background-color: var(--background);
+      border-bottom: var(--rule);
+    }
+    .brand-block {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+    .brand-title {
+      margin: 0;
+      font-family: var(--font-headline);
+      font-size: var(--display-size);
+      font-weight: 300;
+      line-height: 1.15;
+      letter-spacing: 0;
+      color: var(--on-surface);
+    }
+    .brand-title strong {
+      font-weight: 600;
+    }
+    .brand-subtitle {
+      margin: 0;
+      font-size: 0.875rem;
+      color: var(--on-surface-variant);
+    }
+
+    .topbar-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: end;
+      gap: var(--space-sm);
+    }
+
+    .role-preview-field {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    /* Impersonation Notice Strip */
+    .impersonation-strip {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+      padding: var(--space-sm) var(--space-lg);
+      background-color: var(--warning-bg);
+      color: var(--on-warning-bg);
+      border-bottom: var(--rule);
+      border-left: 3px solid var(--warning);
+      font-size: 0.875rem;
+    }
+    .impersonation-strip.is-visible {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    /* Main Grid (Sidebar + Workspace) */
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: 240px minmax(0, 1fr);
+      min-height: 0;
+    }
+    .workspace-grid * { min-width: 0; }
+
+    /* Side Nav */
+    .side-nav {
+      background-color: var(--surface-container-low);
+      border-right: var(--rule);
+      padding: var(--space-md) 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: var(--space-lg);
+    }
+    .nav-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-btn {
+      width: 100%;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-sm) var(--space-md);
+      background: transparent;
+      border: 0;
+      border-left: 2px solid transparent;
+      text-align: left;
+      cursor: pointer;
+      color: var(--on-surface-variant);
+      font-weight: 400;
+      transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
+    }
+    .nav-btn:hover {
+      background-color: var(--surface-container-high);
+      color: var(--on-surface);
+    }
+    .nav-btn.is-active {
+      background-color: var(--surface-container-high);
+      color: var(--on-surface);
+      font-weight: 600;
+      border-left: var(--indicator);
+    }
+    .nav-count {
+      margin-left: auto;
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+    }
+
+    .nav-meta {
+      padding: 0 var(--space-md);
+      border-top: var(--rule);
+      padding-top: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    /* Main Content Canvas */
+    .main-canvas {
+      padding: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-lg);
+    }
+
+    /* View Panels */
+    .view-section {
+      display: none;
+      flex-direction: column;
+      gap: var(--space-lg);
+      animation: panelFade var(--dur-short) var(--ease-out);
+    }
+    .view-section.is-active {
+      display: flex;
+    }
+    @keyframes panelFade {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Carbon Typography & Labels */
+    .label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--on-surface-variant);
+      display: block;
+    }
+    .section-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: end;
+      justify-content: space-between;
+      gap: var(--space-md);
+      border-bottom: var(--rule);
+      padding-bottom: var(--space-sm);
+    }
+    .section-title {
+      margin: 0;
+      font-family: var(--font-headline);
+      font-size: var(--headline-size);
+      font-weight: 300;
+      line-height: 1.2;
+      color: var(--on-surface);
+    }
+    .section-title strong { font-weight: 600; }
+    .panel-title {
+      margin: 0;
+      font-family: var(--font-headline);
+      font-size: var(--subhead-size);
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--on-surface);
+    }
+    .helper-text {
+      margin: 0;
+      font-size: 0.875rem;
+      color: var(--on-surface-variant);
+    }
+
+    /* Carbon Layers */
+    .layer {
+      background-color: var(--surface-container);
+      border-radius: var(--surface-radius);
+      padding: var(--space-md);
+    }
+    .layer .layer {
+      background-color: var(--surface-container-high);
+    }
+
+    /* KPI Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+    .kpi-tile {
+      background-color: var(--surface-container);
+      border-radius: var(--surface-radius);
+      padding: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      border-bottom: 2px solid transparent;
+    }
+    .kpi-tile.key-tile {
+      border-bottom: var(--indicator);
+    }
+    .kpi-value {
+      font-family: var(--font-label);
+      font-weight: 300;
+      font-size: 2rem;
+      line-height: 1.15;
+      color: var(--on-surface);
+      font-variant-numeric: tabular-nums;
+    }
+    .kpi-meta {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+    }
+    .kpi-meta.is-positive {
+      color: var(--positive);
+    }
+
+    /* Asymmetric Analytics Grid */
+    .analytics-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      gap: var(--space-md);
+    }
+    .analytics-panel {
+      background-color: var(--surface-container);
+      border-radius: var(--surface-radius);
+      padding: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+    .panel-header-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: start;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      border-bottom: var(--rule);
+      padding-bottom: var(--space-sm);
+    }
+    .chart-box {
+      position: relative;
+      min-height: 300px;
+      height: 300px;
+      width: 100%;
+    }
+
+    /* Secondary Overview Grid */
+    .split-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
+      gap: var(--space-md);
+    }
+
+    /* Controls & Forms (Always visible labels above inputs, align-items: end) */
+    .toolbar-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: end;
+      gap: var(--space-md);
+      background-color: var(--surface-container);
+      border-radius: var(--surface-radius);
+      padding: var(--space-md);
+    }
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      flex: 1 1 180px;
+      min-width: 0;
+    }
+    .field-group.compact {
+      flex: 0 1 170px;
+    }
+    .field-label {
+      font-size: var(--label-size);
+      font-weight: 500;
+      color: var(--on-surface-variant);
+    }
+    .input-ctrl,
+    .select-ctrl {
+      height: 40px;
+      min-height: 40px;
+      width: 100%;
+      background-color: var(--background);
+      border: 0;
+      border-bottom: var(--field-rule);
+      border-radius: var(--control-radius);
+      padding: 0 var(--space-md);
+      color: var(--on-surface);
+      transition: background-color var(--dur-micro) var(--ease-out);
+    }
+    .select-ctrl {
+      padding-right: var(--space-xl);
+      cursor: pointer;
+    }
+    .input-ctrl.is-error {
+      border-bottom: 2px solid var(--error);
+    }
+    .field-error {
+      font-size: var(--label-size);
+      color: var(--error);
+      min-height: 1rem;
+    }
+
+    /* Buttons (Carbon square corners, aligned heights, no box shadows) */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: var(--space-sm);
+      min-height: 40px;
+      height: 40px;
+      padding: var(--space-xs) var(--space-lg) var(--space-xs) var(--space-md);
+      border-radius: var(--control-radius);
+      border: 1px solid transparent;
+      font-weight: 400;
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
+    }
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+    .btn-primary {
+      background-color: var(--primary);
+      color: var(--on-primary);
+    }
+    .btn-primary:hover:not(:disabled) {
+      background-color: var(--primary-hover);
+    }
+    .btn-secondary {
+      background-color: transparent;
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .btn-secondary:hover:not(:disabled) {
+      background-color: var(--primary-container);
+      color: var(--on-primary-container);
+    }
+    .btn-ghost {
+      background-color: transparent;
+      color: var(--primary);
+      padding: var(--space-xs) var(--space-sm);
+    }
+    .btn-ghost:hover:not(:disabled) {
+      background-color: var(--surface-container-high);
+      color: var(--on-surface);
+    }
+    .btn-danger {
+      background-color: transparent;
+      border-color: var(--error);
+      color: var(--error);
+    }
+    .btn-danger:hover:not(:disabled),
+    .btn-danger.is-armed {
+      background-color: var(--error);
+      color: var(--on-error);
+    }
+    .btn-sm {
+      min-height: 36px;
+      height: 36px;
+      padding: var(--space-xs) var(--space-sm);
+      font-size: 0.8125rem;
+    }
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    /* Inline Drawer / Editor Panel */
+    .inline-form-panel {
+      display: none;
+      background-color: var(--surface-container);
+      border-left: 3px solid var(--primary);
+      border-radius: var(--surface-radius);
+      padding: var(--space-md);
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+    .inline-form-panel.is-open {
+      display: flex;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+      gap: var(--space-md);
+      align-items: end;
+    }
+
+    /* Notification Strip */
+    .status-banner {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+      padding: var(--space-sm) var(--space-md);
+      background-color: var(--surface-container);
+      border-left: 3px solid var(--primary);
+      font-size: 0.875rem;
+    }
+    .status-banner.is-visible {
+      display: flex;
+    }
+    .status-banner.is-success { border-left-color: var(--positive); }
+    .status-banner.is-error { border-left-color: var(--error); }
+
+    /* Tables (Carbon zebra striping, gray 20 header, mono headers, no vertical rules) */
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      background-color: var(--background);
+      border-top: var(--rule);
+      border-bottom: var(--rule);
+    }
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    table.data-table thead th {
+      background-color: var(--surface-container-high);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--on-surface-variant);
+      padding: var(--cell-pad-y) var(--cell-pad-x);
+      white-space: nowrap;
+      border-bottom: var(--rule);
+    }
+    table.data-table tbody tr {
+      border-top: var(--rule);
+      transition: background-color var(--dur-micro) var(--ease-out);
+    }
+    table.data-table tbody tr:nth-child(even) {
+      background-color: var(--surface-container-low);
+    }
+    table.data-table tbody tr:hover {
+      background-color: var(--surface-container-high);
+    }
+    table.data-table tbody tr.is-editing {
+      background-color: var(--primary-container);
+      color: var(--on-primary-container);
+    }
+    table.data-table td {
+      padding: var(--cell-pad-y) var(--cell-pad-x);
+      vertical-align: middle;
+      font-size: 0.875rem;
+    }
+    .num-col {
+      text-align: right !important;
+      font-family: var(--font-label);
+      font-variant-numeric: tabular-nums;
+    }
+    .sort-btn {
+      background: transparent;
+      border: 0;
+      padding: 0;
+      font: inherit;
+      text-transform: inherit;
+      letter-spacing: inherit;
+      color: inherit;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+    .sort-btn:hover {
+      color: var(--on-surface);
+    }
+
+    /* Tags (Carbon 24px pills) */
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      height: 24px;
+      padding: 0 0.625rem;
+      border-radius: var(--rounded-full);
+      font-size: var(--label-size);
+      font-weight: 400;
+      white-space: nowrap;
+      background-color: var(--primary-container);
+      color: var(--on-primary-container);
+      border: 0;
+    }
+    .tag-btn {
+      cursor: pointer;
+      transition: opacity var(--dur-micro) var(--ease-out);
+    }
+    .tag-btn:hover:not(:disabled) {
+      opacity: 0.85;
+    }
+    .tag-pos {
+      background-color: var(--positive-bg);
+      color: var(--on-positive-bg);
+    }
+    .tag-warn {
+      background-color: var(--warning-bg);
+      color: var(--on-warning-bg);
+    }
+    .tag-err {
+      background-color: var(--error-bg);
+      color: var(--on-error-bg);
+    }
+    .tag-neutral {
+      background-color: var(--surface-container-high);
+      color: var(--on-surface);
+    }
+
+    /* Audit & Feed List */
+    .rule-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .rule-list > li {
+      padding: var(--space-sm) 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-md);
+    }
+    .rule-list > li + li {
+      border-top: var(--rule);
+    }
+
+    /* Settings & Card Grid with Container Query */
+    .card-wrapper { container-type: inline-size; }
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+    .swatch-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-sm);
+    }
+    .option-tile {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-md);
+      background-color: var(--background);
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--control-radius);
+      cursor: pointer;
+      text-align: left;
+    }
+    .option-tile.is-selected {
+      border-color: var(--primary);
+      border-bottom: var(--indicator);
+      background-color: var(--primary-container);
+      color: var(--on-primary-container);
+      font-weight: 600;
+    }
+    .swatch-chip {
+      width: 14px;
+      height: 14px;
+      display: inline-block;
+      flex-shrink: 0;
+      background-color: var(--swatch-color, var(--primary));
+    }
+    .swatch-chip.accent-blue { --swatch-color: var(--swatch-blue); }
+    .swatch-chip.accent-teal { --swatch-color: var(--swatch-teal); }
+    .swatch-chip.accent-violet { --swatch-color: var(--swatch-violet); }
+    .swatch-chip.accent-emerald { --swatch-color: var(--swatch-emerald); }
+
+    /* Toggle Switch */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+      padding: var(--space-sm) 0;
+      border-top: var(--rule);
+    }
+    .toggle-btn {
+      min-width: 76px;
+      min-height: 36px;
+      padding: 0 var(--space-sm);
+      border: 1px solid var(--outline);
+      background-color: var(--background);
+      color: var(--on-surface);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .toggle-btn.is-on {
+      background-color: var(--primary);
+      border-color: var(--primary);
+      color: var(--on-primary);
+    }
+
+    /* GitHub Modular Code Explorer */
+    .repo-grid {
+      display: grid;
+      grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
+      gap: var(--space-md);
+    }
+    .repo-tree {
+      background-color: var(--surface-container);
+      padding: var(--space-sm);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+    .repo-file-btn {
+      width: 100%;
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-xs) var(--space-sm);
+      background: transparent;
+      border: 0;
+      border-left: 2px solid transparent;
+      text-align: left;
+      font-family: var(--font-label);
+      font-size: 0.8125rem;
+      color: var(--on-surface-variant);
+      cursor: pointer;
+    }
+    .repo-file-btn:hover {
+      background-color: var(--surface-container-high);
+      color: var(--on-surface);
+    }
+    .repo-file-btn.is-active {
+      background-color: var(--surface-container-high);
+      color: var(--on-surface);
+      font-weight: 600;
+      border-left: var(--indicator);
+    }
+    .code-viewer-panel {
+      background-color: var(--surface-container);
+      padding: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+    .code-pre {
+      margin: 0;
+      padding: var(--space-md);
+      background-color: var(--background);
+      border: var(--rule);
+      font-family: var(--font-label);
+      font-size: 0.8125rem;
+      line-height: 1.55;
+      overflow-x: auto;
+      max-height: 480px;
+      overflow-y: auto;
+      color: var(--on-surface);
+      white-space: pre;
+    }
+
+    /* Empty State */
+    .empty-state {
+      padding: var(--space-xl);
+      text-align: left;
+      background-color: var(--surface-container);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-sm);
+    }
+
+    /* Footer */
+    .app-footer {
+      border-top: var(--rule);
+      padding: var(--space-md) var(--space-lg);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: var(--space-md);
+      font-size: 0.8125rem;
+      color: var(--on-surface-variant);
+      background-color: var(--surface-container-low);
+    }
+
+    /* Inline cell edit controls */
+    .cell-input,
+    .cell-select {
+      height: 34px;
+      min-height: 34px;
+      padding: 0 var(--space-sm);
+      background-color: var(--background);
+      border: 0;
+      border-bottom: var(--field-rule);
+      color: var(--on-surface);
+      font-size: 0.8125rem;
+      width: 100%;
+      min-width: 110px;
+    }
+
+    /* Container Query Adaptation */
+    @container (max-width: 480px) {
+      .swatch-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Responsive Layout Breakpoints */
+    @media (max-width: 960px) {
+      .analytics-grid,
+      .split-grid,
+      .repo-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .workspace-grid {
+        grid-template-columns: 1fr;
+      }
+      .side-nav {
+        border-right: 0;
+        border-bottom: var(--rule);
+        padding: var(--space-sm);
+      }
+      .nav-list {
+        flex-direction: row;
+        overflow-x: auto;
+        gap: var(--space-xs);
+      }
+      .nav-btn {
+        width: auto;
+        white-space: nowrap;
+        border-left: 0;
+        border-bottom: 2px solid transparent;
+      }
+      .nav-btn.is-active {
+        border-left: 0;
+        border-bottom: var(--indicator);
+      }
+      .nav-meta {
+        display: none;
+      }
+      .main-canvas,
+      .topbar {
+        padding: var(--space-md);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Top Header -->
+    <header class="topbar">
+      <div class="brand-block">
+        <h1 class="brand-title"><span id="org-name-display">Meridian</span> <strong>Admin Console</strong></h1>
+        <p class="brand-subtitle">Enterprise operations, role-based access control, and CMS pipeline workspace · 23 November 2026</p>
+      </div>
+
+      <div class="topbar-controls">
+        <div class="role-preview-field">
+          <label class="field-label" for="role-impersonation-select">Active role preview (RBAC)</label>
+          <select id="role-impersonation-select" class="select-ctrl" onchange="setPreviewRole(this.value)">
+            <option value="Super Admin">Super Admin</option>
+            <option value="System Administrator">System Administrator</option>
+            <option value="Editor">Editor</option>
+            <option value="Support Agent">Support Agent</option>
+            <option value="Financial Manager">Financial Manager</option>
+          </select>
+        </div>
+
+        <button type="button" class="btn btn-secondary" id="theme-toggle-btn" onclick="toggleTheme()" aria-label="Toggle light or dark theme">
+          <i data-lucide="moon" aria-hidden="true"></i>
+          <span id="theme-toggle-label">Dark mode</span>
+        </button>
+
+        <button type="button" class="btn btn-primary" onclick="switchView('github')">
+          <i data-lucide="code-2" aria-hidden="true"></i>
+          <span>GitHub code</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Role Impersonation Banner -->
+    <div id="impersonation-banner" class="impersonation-strip" role="status" aria-live="polite">
+      <span>
+        <strong>Role preview active:</strong> Viewing console as <strong id="impersonation-role-label">Editor</strong>. Restricted CRUD actions and settings are enforced according to the RBAC matrix.
+      </span>
+      <button type="button" class="btn btn-secondary btn-sm" onclick="setPreviewRole('Super Admin')">Return to Super Admin</button>
+    </div>
+
+    <!-- Workspace Grid -->
+    <div class="workspace-grid">
+      <aside class="side-nav" aria-label="Primary navigation">
+        <ul class="nav-list">
+          <li>
+            <button type="button" class="nav-btn is-active" id="nav-overview" onclick="switchView('overview')">
+              <i data-lucide="layout-dashboard" aria-hidden="true"></i>
+              <span>Overview</span>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="nav-btn" id="nav-users" onclick="switchView('users')">
+              <i data-lucide="users" aria-hidden="true"></i>
+              <span>Users &amp; RBAC</span>
+              <span class="nav-count" id="nav-count-users">6</span>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="nav-btn" id="nav-deals" onclick="switchView('deals')">
+              <i data-lucide="database" aria-hidden="true"></i>
+              <span>Platforms &amp; Deals</span>
+              <span class="nav-count" id="nav-count-deals">8</span>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="nav-btn" id="nav-audit" onclick="switchView('audit')">
+              <i data-lucide="shield-check" aria-hidden="true"></i>
+              <span>Audit Log</span>
+              <span class="nav-count" id="nav-count-audit">5</span>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="nav-btn" id="nav-settings" onclick="switchView('settings')">
+              <i data-lucide="sliders-horizontal" aria-hidden="true"></i>
+              <span>Design &amp; Settings</span>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="nav-btn" id="nav-github" onclick="switchView('github')">
+              <i data-lucide="folder-git-2" aria-hidden="true"></i>
+              <span>GitHub Export</span>
+            </button>
+          </li>
+        </ul>
+
+        <div class="nav-meta">
+          <span class="label">Active Tokens</span>
+          <span class="helper-text" id="sidebar-token-summary">Light · Signal Blue · Square</span>
+          <span class="label">Persistence</span>
+          <span class="helper-text" id="persistence-status">Initialising state…</span>
+        </div>
+      </aside>
+
+      <main class="main-canvas" id="main-canvas">
+        <!-- Global Action Feedback Banner -->
+        <div id="global-banner" class="status-banner" role="status" aria-live="polite">
+          <span id="global-banner-text"></span>
+          <button type="button" class="btn btn-ghost btn-sm" onclick="dismissBanner()">Dismiss</button>
+        </div>
+
+        <!-- VIEW 1: OVERVIEW & ANALYTICS -->
+        <section id="view-overview" class="view-section is-active" aria-labelledby="heading-overview">
+          <div class="section-head">
+            <div>
+              <span class="label">Operational Telemetry</span>
+              <h2 class="section-title" id="heading-overview">Executive <strong>Analytics Overview</strong></h2>
+            </div>
+            <div class="btn-row">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="switchView('users')">Manage users</button>
+              <button type="button" class="btn btn-primary btn-sm" onclick="switchView('deals')">Edit pipeline CRUD</button>
+            </div>
+          </div>
+
+          <!-- KPI Tiles -->
+          <div class="kpi-grid">
+            <div class="kpi-tile key-tile">
+              <span class="label">Managed Users</span>
+              <span class="kpi-value" id="kpi-users-count">6</span>
+              <span class="kpi-meta is-positive" id="kpi-mfa-rate">83% MFA verified</span>
+            </div>
+            <div class="kpi-tile">
+              <span class="label">Open Deals Pipeline</span>
+              <span class="kpi-value" id="kpi-pipeline-value">£284,500</span>
+              <span class="kpi-meta" id="kpi-deals-count">8 active platform records</span>
+            </div>
+            <div class="kpi-tile">
+              <span class="label">Closed Won Value</span>
+              <span class="kpi-value" id="kpi-won-value">£96,000</span>
+              <span class="kpi-meta is-positive" id="kpi-won-share">34% of pipeline</span>
+            </div>
+            <div class="kpi-tile">
+              <span class="label">Audit Events Logged</span>
+              <span class="kpi-value" id="kpi-audit-count">5</span>
+              <span class="kpi-meta" id="kpi-security-posture">RBAC &amp; audit trail active</span>
+            </div>
+          </div>
+
+          <!-- Charts Row -->
+          <div class="analytics-grid">
+            <div class="analytics-panel">
+              <div class="panel-header-row">
+                <div>
+                  <h3 class="panel-title">Pipeline Value &amp; Platform Deal Stages</h3>
+                  <span class="label">Value in GBP (£) · Live from CRUD Registry</span>
+                </div>
+                <div class="field-group compact">
+                  <label class="field-label" for="chart-metric-mode">Chart view</label>
+                  <select id="chart-metric-mode" class="select-ctrl" onchange="updateCharts()">
+                    <option value="stage">By pipeline stage</option>
+                    <option value="licence">By licence model</option>
+                  </select>
+                </div>
+              </div>
+              <div class="chart-box">
+                <canvas id="pipeline-chart" aria-label="Pipeline value breakdown chart"></canvas>
+              </div>
+            </div>
+
+            <div class="analytics-panel">
+              <div class="panel-header-row">
+                <div>
+                  <h3 class="panel-title">User Roles &amp; MFA Coverage</h3>
+                  <span class="label">Headcount per RBAC Role</span>
+                </div>
+              </div>
+              <div class="chart-box">
+                <canvas id="roles-chart" aria-label="User role distribution chart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Secondary Summary Split -->
+          <div class="split-grid">
+            <div class="layer">
+              <div class="panel-header-row">
+                <div>
+                  <h3 class="panel-title">Recent Audit Trail</h3>
+                  <span class="label">Latest administrative actions</span>
+                </div>
+                <button type="button" class="btn btn-ghost btn-sm" onclick="switchView('audit')">View full log</button>
+              </div>
+              <ul class="rule-list" id="overview-audit-list"></ul>
+            </div>
+
+            <div class="layer">
+              <div class="panel-header-row">
+                <div>
+                  <h3 class="panel-title">Security &amp; Governance Posture</h3>
+                  <span class="label">SaaS Admin Hardening Controls</span>
+                </div>
+                <button type="button" class="btn btn-ghost btn-sm" onclick="switchView('settings')">Configure</button>
+              </div>
+              <ul class="rule-list" id="overview-security-list"></ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 2: USERS & RBAC -->
+        <section id="view-users" class="view-section" aria-labelledby="heading-users">
+          <div class="section-head">
+            <div>
+              <span class="label">Identity &amp; Access Management</span>
+              <h2 class="section-title" id="heading-users">User Directory &amp; <strong>Role Permissions</strong></h2>
+            </div>
+            <div class="btn-row">
+              <button type="button" class="btn btn-secondary" onclick="exportUsersCsv()">
+                <i data-lucide="download" aria-hidden="true"></i>
+                <span>Export CSV</span>
+              </button>
+              <button type="button" class="btn btn-primary" id="btn-toggle-add-user" onclick="toggleAddUserForm()">
+                <i data-lucide="user-plus" aria-hidden="true"></i>
+                <span>Add user</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Inline Add User Form -->
+          <div id="add-user-panel" class="inline-form-panel">
+            <div class="panel-header-row">
+              <h3 class="panel-title" id="user-form-heading">Create New Team Member</h3>
+              <button type="button" class="btn btn-ghost btn-sm" onclick="closeUserForm()">Cancel</button>
+            </div>
+            <div class="form-grid">
+              <div class="field-group">
+                <label class="field-label" for="user-name-input">Full name</label>
+                <input type="text" id="user-name-input" class="input-ctrl" placeholder="e.g. Charlotte Davies">
+                <span class="field-error" id="user-name-error"></span>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="user-email-input">Work email address</label>
+                <input type="email" id="user-email-input" class="input-ctrl" placeholder="e.g. c.davies@meridian.co.uk">
+                <span class="field-error" id="user-email-error"></span>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="user-role-input">Assigned RBAC role</label>
+                <select id="user-role-input" class="select-ctrl">
+                  <option value="Super Admin">Super Admin</option>
+                  <option value="System Administrator">System Administrator</option>
+                  <option value="Editor">Editor</option>
+                  <option value="Support Agent">Support Agent</option>
+                  <option value="Financial Manager">Financial Manager</option>
+                </select>
+                <span class="field-error"></span>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="user-dept-input">Department</label>
+                <input type="text" id="user-dept-input" class="input-ctrl" placeholder="e.g. Platform Engineering">
+                <span class="field-error"></span>
+              </div>
+              <div class="field-group compact">
+                <label class="field-label" for="user-mfa-input">MFA status</label>
+                <select id="user-mfa-input" class="select-ctrl">
+                  <option value="Enabled">Enabled</option>
+                  <option value="Pending">Pending</option>
+                </select>
+                <span class="field-error"></span>
+              </div>
+              <div class="field-group compact">
+                <button type="button" class="btn btn-primary" onclick="saveUserForm()">Save user</button>
+                <span class="field-error"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Filter Toolbar -->
+          <div class="toolbar-row">
+            <div class="field-group">
+              <label class="field-label" for="user-search">Search name or email</label>
+              <input type="search" id="user-search" class="input-ctrl" placeholder="Filter directory…" oninput="renderUsersTable()">
+            </div>
+            <div class="field-group compact">
+              <label class="field-label" for="user-role-filter">Role</label>
+              <select id="user-role-filter" class="select-ctrl" onchange="renderUsersTable()">
+                <option value="all">All roles</option>
+                <option value="Super Admin">Super Admin</option>
+                <option value="System Administrator">System Administrator</option>
+                <option value="Editor">Editor</option>
+                <option value="Support Agent">Support Agent</option>
+                <option value="Financial Manager">Financial Manager</option>
+              </select>
+            </div>
+            <div class="field-group compact">
+              <label class="field-label" for="user-mfa-filter">MFA</label>
+              <select id="user-mfa-filter" class="select-ctrl" onchange="renderUsersTable()">
+                <option value="all">All statuses</option>
+                <option value="Enabled">MFA Enabled</option>
+                <option value="Pending">MFA Pending</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Users CRUD Table -->
+          <div class="table-wrap" id="users-table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th><button type="button" class="sort-btn" onclick="sortUsers('name')">User <span id="sort-users-name"></span></button></th>
+                  <th><button type="button" class="sort-btn" onclick="sortUsers('role')">Role <span id="sort-users-role"></span></button></th>
+                  <th>Department</th>
+                  <th>MFA</th>
+                  <th><button type="button" class="sort-btn" onclick="sortUsers('status')">Status <span id="sort-users-status"></span></button></th>
+                  <th>Last active</th>
+                  <th class="num-col">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="users-tbody"></tbody>
+            </table>
+          </div>
+
+          <!-- RBAC Matrix -->
+          <div class="layer">
+            <div class="panel-header-row">
+              <div>
+                <h3 class="panel-title">Role-Based Access Control (RBAC) Permission Matrix</h3>
+                <span class="label">Principle of least privilege · Changes enforce live across role previews</span>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table" id="rbac-matrix-table">
+                <thead>
+                  <tr>
+                    <th>Role</th>
+                    <th>Create records</th>
+                    <th>Edit content &amp; deals</th>
+                    <th>Delete records</th>
+                    <th>Manage users</th>
+                    <th>View financials</th>
+                    <th>Modify settings</th>
+                  </tr>
+                </thead>
+                <tbody id="rbac-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 3: PLATFORMS & DEALS CRUD -->
+        <section id="view-deals" class="view-section" aria-labelledby="heading-deals">
+          <div class="section-head">
+            <div>
+              <span class="label">CMS &amp; Enterprise CRM Registry</span>
+              <h2 class="section-title" id="heading-deals">Platforms &amp; <strong>Client Deals CRUD</strong></h2>
+            </div>
+            <div class="btn-row">
+              <button type="button" class="btn btn-secondary" onclick="exportDealsCsv()">
+                <i data-lucide="download" aria-hidden="true"></i>
+                <span>Export CSV</span>
+              </button>
+              <button type="button" class="btn btn-primary" id="btn-toggle-add-deal" onclick="toggleAddDealForm()">
+                <i data-lucide="plus" aria-hidden="true"></i>
+                <span>Add record</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Inline Add Deal Form -->
+          <div id="add-deal-panel" class="inline-form-panel">
+            <div class="panel-header-row">
+              <h3 class="panel-title">Create Platform / Client Deal Record</h3>
+              <button type="button" class="btn btn-ghost btn-sm" onclick="closeDealForm()">Cancel</button>
+            </div>
+            <div class="form-grid">
+              <div class="field-group">
+                <label class="field-label" for="deal-platform-input">Platform / Client name</label>
+                <input type="text" id="deal-platform-input" class="input-ctrl" placeholder="e.g. Strapi Enterprise">
+                <span class="field-error" id="deal-platform-error"></span>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="deal-stack-input">Technology stack</label>
+                <input type="text" id="deal-stack-input" class="input-ctrl" placeholder="e.g. Node.js · PostgreSQL">
+                <span class="field-error"></span>
+              </div>
+              <div class="field-group compact">
+                <label class="field-label" for="deal-licence-input">Licence category</label>
+                <select id="deal-licence-input" class="select-ctrl">
+                  <option value="Open Source">Open Source</option>
+                  <option value="Source-Available">Source-Available</option>
+                  <option value="Proprietary">Proprietary</option>
+                </select>
+                <span class="field-error"></span>
+              </div>
+              <div class="field-group compact">
+                <label class="field-label" for="deal-stage-input">Pipeline stage</label>
+                <select id="deal-stage-input" class="select-ctrl">
+                  <option value="Discovery">Discovery</option>
+                  <option value="Proposal">Proposal</option>
+                  <option value="Negotiation">Negotiation</option>
+                  <option value="Closed Won">Closed Won</option>
+                </select>
+                <span class="field-error"></span>
+              </div>
+              <div class="field-group compact">
+                <label class="field-label" for="deal-value-input">Deal value (£)</label>
+                <input type="number" id="deal-value-input" class="input-ctrl" min="0" step="500" value="25000">
+                <span class="field-error" id="deal-value-error"></span>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="deal-owner-input">Lead handler</label>
+                <input type="text" id="deal-owner-input" class="input-ctrl" placeholder="e.g. Oliver Bennett">
+                <span class="field-error"></span>
+              </div>
+              <div class="field-group compact">
+                <button type="button" class="btn btn-primary" onclick="saveNewDeal()">Add record</button>
+                <span class="field-error"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Deals Filter Toolbar -->
+          <div class="toolbar-row">
+            <div class="field-group">
+              <label class="field-label" for="deal-search">Search platform, stack, or handler</label>
+              <input type="search" id="deal-search" class="input-ctrl" placeholder="Filter records…" oninput="renderDealsTable()">
+            </div>
+            <div class="field-group compact">
+              <label class="field-label" for="deal-licence-filter">Licence model</label>
+              <select id="deal-licence-filter" class="select-ctrl" onchange="renderDealsTable()">
+                <option value="all">All licences</option>
+                <option value="Open Source">Open Source</option>
+                <option value="Source-Available">Source-Available</option>
+                <option value="Proprietary">Proprietary</option>
+              </select>
+            </div>
+            <div class="field-group compact">
+              <label class="field-label" for="deal-stage-filter">Pipeline stage</label>
+              <select id="deal-stage-filter" class="select-ctrl" onchange="renderDealsTable()">
+                <option value="all">All stages</option>
+                <option value="Discovery">Discovery</option>
+                <option value="Proposal">Proposal</option>
+                <option value="Negotiation">Negotiation</option>
+                <option value="Closed Won">Closed Won</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Editable Deals Table -->
+          <div class="table-wrap" id="deals-table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th><button type="button" class="sort-btn" onclick="sortDeals('platform')">Platform / Client</button></th>
+                  <th>Stack</th>
+                  <th>Licence</th>
+                  <th><button type="button" class="sort-btn" onclick="sortDeals('stage')">Stage</button></th>
+                  <th>Lead handler</th>
+                  <th class="num-col"><button type="button" class="sort-btn" onclick="sortDeals('value')">Deal value (£)</button></th>
+                  <th class="num-col">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="deals-tbody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- VIEW 4: AUDIT LOG -->
+        <section id="view-audit" class="view-section" aria-labelledby="heading-audit">
+          <div class="section-head">
+            <div>
+              <span class="label">Compliance &amp; Traceability</span>
+              <h2 class="section-title" id="heading-audit">System <strong>Audit Trail</strong></h2>
+            </div>
+            <div class="btn-row">
+              <button type="button" class="btn btn-secondary" onclick="exportAuditCsv()">
+                <i data-lucide="download" aria-hidden="true"></i>
+                <span>Export log CSV</span>
+              </button>
+              <button type="button" class="btn btn-danger" id="btn-clear-audit" onclick="clearAuditLog(this)">
+                <i data-lucide="trash-2" aria-hidden="true"></i>
+                <span>Clear logs</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="toolbar-row">
+            <div class="field-group">
+              <label class="field-label" for="audit-search">Search event, actor, or target</label>
+              <input type="search" id="audit-search" class="input-ctrl" placeholder="Search audit entries…" oninput="renderAuditTable()">
+            </div>
+            <div class="field-group compact">
+              <label class="field-label" for="audit-category-filter">Category</label>
+              <select id="audit-category-filter" class="select-ctrl" onchange="renderAuditTable()">
+                <option value="all">All categories</option>
+                <option value="Access & Auth">Access &amp; Auth</option>
+                <option value="Data CRUD">Data CRUD</option>
+                <option value="Configuration">Configuration</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Timestamp (UK)</th>
+                  <th>Category</th>
+                  <th>Action</th>
+                  <th>Actor</th>
+                  <th>Detail</th>
+                </tr>
+              </thead>
+              <tbody id="audit-tbody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- VIEW 5: DESIGN & SETTINGS -->
+        <section id="view-settings" class="view-section" aria-labelledby="heading-settings">
+          <div class="section-head">
+            <div>
+              <span class="label">Theme Tokens &amp; Policies</span>
+              <h2 class="section-title" id="heading-settings">Design Customiser &amp; <strong>System Settings</strong></h2>
+            </div>
+          </div>
+
+          <div class="settings-grid">
+            <!-- Theme & Visual Design Controls -->
+            <div class="layer card-wrapper">
+              <div class="panel-header-row">
+                <div>
+                  <h3 class="panel-title">Appearance &amp; Design Tokens</h3>
+                  <span class="label">Live CSS custom property overrides</span>
+                </div>
+              </div>
+
+              <div style="display:flex; flex-direction:column; gap:var(--space-md); margin-top:var(--space-md);">
+                <div>
+                  <span class="field-label">Colour mode</span>
+                  <div class="swatch-grid" style="margin-top:var(--space-xs);">
+                    <button type="button" class="option-tile" id="opt-theme-light" onclick="setTheme('light')">
+                      <i data-lucide="sun" aria-hidden="true"></i>
+                      <span>Light (Carbon White)</span>
+                    </button>
+                    <button type="button" class="option-tile" id="opt-theme-dark" onclick="setTheme('dark')">
+                      <i data-lucide="moon" aria-hidden="true"></i>
+                      <span>Dark (Gray 100)</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <span class="field-label">Signal accent colour</span>
+                  <div class="swatch-grid" style="margin-top:var(--space-xs);">
+                    <button type="button" class="option-tile" id="opt-accent-blue" onclick="setAccent('blue')">
+                      <span class="swatch-chip accent-blue"></span>
+                      <span>Signal Blue</span>
+                    </button>
+                    <button type="button" class="option-tile" id="opt-accent-teal" onclick="setAccent('teal')">
+                      <span class="swatch-chip accent-teal"></span>
+                      <span>Mineral Teal</span>
+                    </button>
+                    <button type="button" class="option-tile" id="opt-accent-violet" onclick="setAccent('violet')">
+                      <span class="swatch-chip accent-violet"></span>
+                      <span>Royal Violet</span>
+                    </button>
+                    <button type="button" class="option-tile" id="opt-accent-emerald" onclick="setAccent('emerald')">
+                      <span class="swatch-chip accent-emerald"></span>
+                      <span>Forest Emerald</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <span class="field-label">Corner geometry</span>
+                  <div class="swatch-grid" style="margin-top:var(--space-xs);">
+                    <button type="button" class="option-tile" id="opt-radius-square" onclick="setRadius('square')">
+                      <span>Square (0px)</span>
+                    </button>
+                    <button type="button" class="option-tile" id="opt-radius-crisp" onclick="setRadius('crisp')">
+                      <span>Crisp (4px)</span>
+                    </button>
+                    <button type="button" class="option-tile" id="opt-radius-soft" onclick="setRadius('soft')">
+                      <span>Soft (8px)</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <span class="field-label">Table &amp; row density</span>
+                  <div class="swatch-grid" style="margin-top:var(--space-xs);">
+                    <button type="button" class="option-tile" id="opt-density-comfortable" onclick="setDensity('comfortable')">
+                      <span>Comfortable</span>
+                    </button>
+                    <button type="button" class="option-tile" id="opt-density-compact" onclick="setDensity('compact')">
+                      <span>Compact</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Security & Workspace Settings -->
+            <div class="layer">
+              <div class="panel-header-row">
+                <div>
+                  <h3 class="panel-title">Security &amp; Organisation Policies</h3>
+                  <span class="label">Operational guardrails &amp; persistence</span>
+                </div>
+              </div>
+
+              <div style="display:flex; flex-direction:column; gap:var(--space-md); margin-top:var(--space-md);">
+                <div class="field-group">
+                  <label class="field-label" for="setting-org-name">Organisation display name</label>
+                  <input type="text" id="setting-org-name" class="input-ctrl" value="Meridian" onchange="updateOrgName(this.value)">
+                </div>
+
+                <div class="toggle-row">
+                  <div>
+                    <strong>Enforce MFA for privileged roles</strong>
+                    <p class="helper-text">Require hardware token or TOTP verification for Admin logins.</p>
+                  </div>
+                  <button type="button" class="toggle-btn is-on" id="toggle-enforce-mfa" onclick="toggleSecuritySetting('enforceMfa')">On</button>
+                </div>
+
+                <div class="toggle-row">
+                  <div>
+                    <strong>Strict RBAC UI enforcement</strong>
+                    <p class="helper-text">Disable restricted CRUD controls during role preview.</p>
+                  </div>
+                  <button type="button" class="toggle-btn is-on" id="toggle-strict-rbac" onclick="toggleSecuritySetting('strictRbac')">On</button>
+                </div>
+
+                <div class="toggle-row">
+                  <div>
+                    <strong>Automatic CRUD audit logging</strong>
+                    <p class="helper-text">Record create, update, delete, and export actions in real time.</p>
+                  </div>
+                  <button type="button" class="toggle-btn is-on" id="toggle-auto-audit" onclick="toggleSecuritySetting('autoAudit')">On</button>
+                </div>
+
+                <div class="toggle-row">
+                  <div>
+                    <strong>Backup &amp; factory reset</strong>
+                    <p class="helper-text">Export full workspace JSON or restore baseline seed data.</p>
+                  </div>
+                  <div class="btn-row">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="exportFullBackup()">Export JSON</button>
+                    <button type="button" class="btn btn-danger btn-sm" id="btn-factory-reset" onclick="resetWorkspace(this)">Reset defaults</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 6: GITHUB MODULAR CODE EXPORT -->
+        <section id="view-github" class="view-section" aria-labelledby="heading-github">
+          <div class="section-head">
+            <div>
+              <span class="label">Clean Modular Architecture</span>
+              <h2 class="section-title" id="heading-github">GitHub Repository <strong>Structure &amp; Source Export</strong></h2>
+            </div>
+            <div class="btn-row">
+              <button type="button" class="btn btn-secondary" onclick="copyCurrentRepoFile()">
+                <i data-lucide="copy" aria-hidden="true"></i>
+                <span id="copy-file-label">Copy file</span>
+              </button>
+              <button type="button" class="btn btn-primary" onclick="downloadCurrentRepoFile()">
+                <i data-lucide="download" aria-hidden="true"></i>
+                <span>Download file</span>
+              </button>
+            </div>
+          </div>
+
+          <p class="helper-text">
+            Inspect and download clean, modular front-end files ready for a GitHub repository. CSS token files automatically reflect your active Appearance settings, alongside a modular React + TypeScript component equivalent.
+          </p>
+
+          <div class="repo-grid">
+            <div class="repo-tree" aria-label="Repository files">
+              <span class="label" style="padding: var(--space-xs) var(--space-sm);">Repository Tree</span>
+              <button type="button" class="repo-file-btn is-active" id="repo-btn-readme" onclick="selectRepoFile('readme')">README.md</button>
+              <button type="button" class="repo-file-btn" id="repo-btn-html" onclick="selectRepoFile('html')">index.html</button>
+              <button type="button" class="repo-file-btn" id="repo-btn-tokens" onclick="selectRepoFile('tokens')">src/styles/tokens.css</button>
+              <button type="button" class="repo-file-btn" id="repo-btn-components" onclick="selectRepoFile('components')">src/styles/components.css</button>
+              <button type="button" class="repo-file-btn" id="repo-btn-store" onclick="selectRepoFile('store')">src/js/store.js</button>
+              <button type="button" class="repo-file-btn" id="repo-btn-react" onclick="selectRepoFile('react')">src/react/AdminDashboard.tsx</button>
+            </div>
+
+            <div class="code-viewer-panel">
+              <div class="panel-header-row">
+                <div>
+                  <h3 class="panel-title" id="repo-file-title">README.md</h3>
+                  <span class="label" id="repo-file-meta">Markdown · GitHub Deployment Guide</span>
+                </div>
+              </div>
+              <pre class="code-pre"><code id="repo-code-content"></code></pre>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <footer class="app-footer">
+      <span>Meridian Admin Console · Modular CRUD &amp; RBAC Operations Blueprint</span>
+      <span>Grounded in AdminLTE 2026 CMS Comparison, Refine Enterprise Architecture, Sodeira SaaS Security, and Backpack for Laravel</span>
+    </footer>
+  </div>
+
+  <api-shim></api-shim>
+
+  <script>
+    // -------------------------------------------------------------------------
+    // 1. Seed Data & Application State (Backtick strings for defensive JS)
+    // -------------------------------------------------------------------------
+    const ROLES = [
+      `Super Admin`,
+      `System Administrator`,
+      `Editor`,
+      `Support Agent`,
+      `Financial Manager`
+    ];
+
+    const PERMISSION_KEYS = [
+      { key: `create`, label: `Create records` },
+      { key: `edit`, label: `Edit content & deals` },
+      { key: `delete`, label: `Delete records` },
+      { key: `manageUsers`, label: `Manage users` },
+      { key: `financials`, label: `View financials` },
+      { key: `settings`, label: `Modify settings` }
+    ];
+
+    function getDefaultState() {
+      return {
+        orgName: `Meridian`,
+        theme: `light`,
+        accent: `blue`,
+        radius: `square`,
+        density: `comfortable`,
+        previewRole: `Super Admin`,
+        security: {
+          enforceMfa: true,
+          strictRbac: true,
+          autoAudit: true
+        },
+        permissions: {
+          "Super Admin": { create: true, edit: true, delete: true, manageUsers: true, financials: true, settings: true },
+          "System Administrator": { create: true, edit: true, delete: true, manageUsers: true, financials: false, settings: true },
+          "Editor": { create: true, edit: true, delete: false, manageUsers: false, financials: false, settings: false },
+          "Support Agent": { create: false, edit: false, delete: false, manageUsers: false, financials: false, settings: false },
+          "Financial Manager": { create: true, edit: true, delete: false, manageUsers: false, financials: true, settings: false }
+        },
+        users: [
+          { id: `USR-101`, name: `Eleanor Vance`, email: `e.vance@meridian.co.uk`, role: `Super Admin`, dept: `Platform Architecture`, mfa: `Enabled`, status: `Active`, lastActive: `23 Nov 2026, 09:14` },
+          { id: `USR-102`, name: `Oliver Bennett`, email: `o.bennett@meridian.co.uk`, role: `System Administrator`, dept: `Cloud Operations`, mfa: `Enabled`, status: `Active`, lastActive: `23 Nov 2026, 08:42` },
+          { id: `USR-103`, name: `Sophie Clarke`, email: `s.clarke@meridian.co.uk`, role: `Editor`, dept: `Editorial Systems`, mfa: `Enabled`, status: `Active`, lastActive: `22 Nov 2026, 17:30` },
+          { id: `USR-104`, name: `Marcus Reid`, email: `m.reid@meridian.co.uk`, role: `Financial Manager`, dept: `Commercial Ops`, mfa: `Enabled`, status: `Active`, lastActive: `22 Nov 2026, 15:18` },
+          { id: `USR-105`, name: `Priya Patel`, email: `p.patel@meridian.co.uk`, role: `Support Agent`, dept: `Customer Success`, mfa: `Pending`, status: `Active`, lastActive: `21 Nov 2026, 11:05` },
+          { id: `USR-106`, name: `Callum Fraser`, email: `c.fraser@meridian.co.uk`, role: `Editor`, dept: `Product Docs`, mfa: `Enabled`, status: `Suspended`, lastActive: `14 Nov 2026, 16:40` }
+        ],
+        deals: [
+          { id: `CMS-201`, platform: `Strapi Enterprise`, stack: `Node.js · PostgreSQL`, licence: `Open Source`, stage: `Closed Won`, owner: `Eleanor Vance`, value: 48000 },
+          { id: `CMS-202`, platform: `Payload Next.js`, stack: `Next.js · TypeScript`, licence: `Open Source`, stage: `Negotiation`, owner: `Oliver Bennett`, value: 42500 },
+          { id: `CMS-203`, platform: `Directus SQL Hub`, stack: `Node.js · Existing SQL`, licence: `Source-Available`, stage: `Proposal`, owner: `Marcus Reid`, value: 36000 },
+          { id: `CMS-204`, platform: `Sanity Studio`, stack: `React · Content Lake`, licence: `Open Source`, stage: `Closed Won`, owner: `Sophie Clarke`, value: 48000 },
+          { id: `CMS-205`, platform: `Wagtail Editorial`, stack: `Python · Django`, licence: `Open Source`, stage: `Proposal`, owner: `Eleanor Vance`, value: 31000 },
+          { id: `CMS-206`, platform: `Statamic Pro`, stack: `PHP · Laravel · Flat-file`, licence: `Source-Available`, stage: `Discovery`, owner: `Oliver Bennett`, value: 24500 },
+          { id: `CMS-207`, platform: `Craft Commerce`, stack: `PHP · Twig · GraphQL`, licence: `Source-Available`, stage: `Negotiation`, owner: `Marcus Reid`, value: 38500 },
+          { id: `CMS-208`, platform: `October CMS EULA`, stack: `PHP · Laravel`, licence: `Proprietary`, stage: `Discovery`, owner: `Priya Patel`, value: 16000 }
+        ],
+        audit: [
+          { id: `AUD-501`, timestamp: `23 Nov 2026, 09:14`, category: `Access & Auth`, action: `RBAC Policy Verified`, actor: `Eleanor Vance`, detail: `Verified least-privilege matrix for 5 operational roles` },
+          { id: `AUD-502`, timestamp: `23 Nov 2026, 08:45`, category: `Data CRUD`, action: `Deal Stage Updated`, actor: `Oliver Bennett`, detail: `Payload Next.js moved to Negotiation (£42,500)` },
+          { id: `AUD-503`, timestamp: `22 Nov 2026, 17:32`, category: `Access & Auth`, action: `Account Suspended`, actor: `Eleanor Vance`, detail: `Callum Fraser status changed to Suspended` },
+          { id: `AUD-504`, timestamp: `22 Nov 2026, 14:10`, category: `Configuration`, action: `MFA Policy Enforced`, actor: `Oliver Bennett`, detail: `Hardware/TOTP requirement enabled for Admin roles` },
+          { id: `AUD-505`, timestamp: `21 Nov 2026, 10:20`, category: `Data CRUD`, action: `Platform Added`, actor: `Marcus Reid`, detail: `Directus SQL Hub registered under Source-Available licence` }
+        ]
+      };
+    }
+
+    let appState = getDefaultState();
+    let currentView = `overview`;
+    let currentRepoFile = `readme`;
+    let editingUserId = null;
+    let editingDealId = null;
+    let userSort = { field: `name`, asc: true };
+    let dealSort = { field: `value`, asc: false };
+    let pipelineChartInstance = null;
+    let rolesChartInstance = null;
+
+    // -------------------------------------------------------------------------
+    // 2. Persistence Helpers (Gemini Notebook Shim API)
+    // -------------------------------------------------------------------------
+    async function persistState() {
+      const statusEl = document.getElementById(`persistence-status`);
+      try {
+        if (window.notebookAppApi && typeof window.notebookAppApi.setAppState === `function`) {
+          await window.notebookAppApi.setAppState(appState);
+          if (statusEl) statusEl.textContent = `Saved (` + formatUkTimestamp() + `)`;
+        } else {
+          if (statusEl) statusEl.textContent = `Session active (memory)`;
+        }
+      } catch (err) {
+        if (statusEl) statusEl.textContent = `Save warning`;
+      }
+    }
+
+    function formatUkTimestamp() {
+      const now = new Date();
+      const months = [`Jan`, `Feb`, `Mar`, `Apr`, `May`, `Jun`, `Jul`, `Aug`, `Sep`, `Oct`, `Nov`, `Dec`];
+      const day = String(now.getDate()).padStart(2, `0`);
+      const mon = months[now.getMonth()];
+      const yr = now.getFullYear();
+      const hh = String(now.getHours()).padStart(2, `0`);
+      const mm = String(now.getMinutes()).padStart(2, `0`);
+      return `${day} ${mon} ${yr}, ${hh}:${mm}`;
+    }
+
+    function formatGBP(amount) {
+      const num = Number(amount) || 0;
+      return `£` + num.toLocaleString(`en-GB`);
+    }
+
+    function escapeHtml(text) {
+      const str = String(text === null || text === undefined ? `` : text);
+      return str
+        .replace(/&/g, `&amp;`)
+        .replace(/</g, `&lt;`)
+        .replace(/>/g, `&gt;`)
+        .replace(/"/g, `&quot;`)
+        .replace(/'/g, `&#39;`);
+    }
+
+    function hasPerm(permKey) {
+      if (!appState.security.strictRbac) return true;
+      const rolePerms = appState.permissions[appState.previewRole];
+      return Boolean(rolePerms && rolePerms[permKey]);
+    }
+
+    function logAudit(category, action, detail) {
+      if (!appState.security.autoAudit) return;
+      const nextNum = 501 + appState.audit.length + Math.floor(Math.random() * 10);
+      appState.audit.unshift({
+        id: `AUD-${nextNum}`,
+        timestamp: formatUkTimestamp(),
+        category: category,
+        action: action,
+        actor: `${appState.previewRole} (Session)`,
+        detail: detail
+      });
+      if (appState.audit.length > 60) {
+        appState.audit = appState.audit.slice(0, 60);
+      }
+    }
+
+    function showBanner(message, type) {
+      const banner = document.getElementById(`global-banner`);
+      const text = document.getElementById(`global-banner-text`);
+      if (!banner || !text) return;
+      banner.className = `status-banner is-visible` + (type === `error` ? ` is-error` : type === `success` ? ` is-success` : ``);
+      text.textContent = message;
+    }
+
+    function dismissBanner() {
+      const banner = document.getElementById(`global-banner`);
+      if (banner) banner.classList.remove(`is-visible`);
+    }
+
+    // -------------------------------------------------------------------------
+    // 3. Navigation & Theme Design Controls
+    // -------------------------------------------------------------------------
+    function switchView(viewId) {
+      currentView = viewId;
+      const views = [`overview`, `users`, `deals`, `audit`, `settings`, `github`];
+      for (let i = 0; i < views.length; i++) {
+        const v = views[i];
+        const sec = document.getElementById(`view-${v}`);
+        const nav = document.getElementById(`nav-${v}`);
+        if (sec) sec.classList.toggle(`is-active`, v === viewId);
+        if (nav) nav.classList.toggle(`is-active`, v === viewId);
+      }
+      if (viewId === `overview`) {
+        updateCharts();
+      } else if (viewId === `github`) {
+        renderRepoCode();
+      }
+    }
+
+    function applyDesignTokens() {
+      const root = document.documentElement;
+      root.setAttribute(`data-theme`, appState.theme);
+      root.setAttribute(`data-accent`, appState.accent);
+      root.setAttribute(`data-radius`, appState.radius);
+      root.setAttribute(`data-density`, appState.density);
+
+      const themeBtnLabel = document.getElementById(`theme-toggle-label`);
+      const themeBtn = document.getElementById(`theme-toggle-btn`);
+      if (themeBtnLabel) {
+        themeBtnLabel.textContent = appState.theme === `dark` ? `Light mode` : `Dark mode`;
+      }
+      if (themeBtn) {
+        const iconEl = themeBtn.querySelector(`svg, i`);
+        if (iconEl) {
+          iconEl.setAttribute(`data-lucide`, appState.theme === `dark` ? `sun` : `moon`);
+        }
+      }
+
+      const orgDisp = document.getElementById(`org-name-display`);
+      if (orgDisp) orgDisp.textContent = appState.orgName || `Meridian`;
+
+      const orgInput = document.getElementById(`setting-org-name`);
+      if (orgInput && orgInput.value !== appState.orgName) {
+        orgInput.value = appState.orgName;
+      }
+
+      const tokenSummary = document.getElementById(`sidebar-token-summary`);
+      if (tokenSummary) {
+        const tLabel = appState.theme === `dark` ? `Dark` : `Light`;
+        const aMap = { blue: `Signal Blue`, teal: `Mineral Teal`, violet: `Royal Violet`, emerald: `Forest Emerald` };
+        const rMap = { square: `Square`, crisp: `Crisp`, soft: `Soft` };
+        tokenSummary.textContent = `${tLabel} · ${aMap[appState.accent] || `Signal Blue`} · ${rMap[appState.radius] || `Square`}`;
+      }
+
+      updateSettingsTilesUI();
+      refreshIcons();
+    }
+
+    function updateSettingsTilesUI() {
+      const themeOpts = [`light`, `dark`];
+      for (let i = 0; i < themeOpts.length; i++) {
+        const el = document.getElementById(`opt-theme-${themeOpts[i]}`);
+        if (el) el.classList.toggle(`is-selected`, appState.theme === themeOpts[i]);
+      }
+      const accentOpts = [`blue`, `teal`, `violet`, `emerald`];
+      for (let i = 0; i < accentOpts.length; i++) {
+        const el = document.getElementById(`opt-accent-${accentOpts[i]}`);
+        if (el) el.classList.toggle(`is-selected`, appState.accent === accentOpts[i]);
+      }
+      const radOpts = [`square`, `crisp`, `soft`];
+      for (let i = 0; i < radOpts.length; i++) {
+        const el = document.getElementById(`opt-radius-${radOpts[i]}`);
+        if (el) el.classList.toggle(`is-selected`, appState.radius === radOpts[i]);
+      }
+      const denOpts = [`comfortable`, `compact`];
+      for (let i = 0; i < denOpts.length; i++) {
+        const el = document.getElementById(`opt-density-${denOpts[i]}`);
+        if (el) el.classList.toggle(`is-selected`, appState.density === denOpts[i]);
+      }
+
+      const mfaBtn = document.getElementById(`toggle-enforce-mfa`);
+      const rbacBtn = document.getElementById(`toggle-strict-rbac`);
+      const auditBtn = document.getElementById(`toggle-auto-audit`);
+      if (mfaBtn) {
+        mfaBtn.classList.toggle(`is-on`, appState.security.enforceMfa);
+        mfaBtn.textContent = appState.security.enforceMfa ? `On` : `Off`;
+      }
+      if (rbacBtn) {
+        rbacBtn.classList.toggle(`is-on`, appState.security.strictRbac);
+        rbacBtn.textContent = appState.security.strictRbac ? `On` : `Off`;
+      }
+      if (auditBtn) {
+        auditBtn.classList.toggle(`is-on`, appState.security.autoAudit);
+        auditBtn.textContent = appState.security.autoAudit ? `On` : `Off`;
+      }
+    }
+
+    function toggleTheme() {
+      setTheme(appState.theme === `dark` ? `light` : `dark`);
+    }
+
+    function setTheme(mode) {
+      appState.theme = mode;
+      logAudit(`Configuration`, `Theme Changed`, `Switched appearance mode to ${mode}`);
+      applyDesignTokens();
+      updateCharts();
+      renderAuditTable();
+      renderOverview();
+      if (currentView === `github`) renderRepoCode();
+      persistState();
+    }
+
+    function setAccent(accent) {
+      if (!hasPerm(`settings`)) {
+        showBanner(`Permission denied: ${appState.previewRole} cannot modify design settings.`, `error`);
+        return;
+      }
+      appState.accent = accent;
+      logAudit(`Configuration`, `Accent Colour Updated`, `Applied ${accent} accent token set`);
+      applyDesignTokens();
+      updateCharts();
+      renderAuditTable();
+      if (currentView === `github`) renderRepoCode();
+      persistState();
+    }
+
+    function setRadius(radius) {
+      if (!hasPerm(`settings`)) {
+        showBanner(`Permission denied: ${appState.previewRole} cannot modify design settings.`, `error`);
+        return;
+      }
+      appState.radius = radius;
+      applyDesignTokens();
+      if (currentView === `github`) renderRepoCode();
+      persistState();
+    }
+
+    function setDensity(density) {
+      if (!hasPerm(`settings`)) {
+        showBanner(`Permission denied: ${appState.previewRole} cannot modify design settings.`, `error`);
+        return;
+      }
+      appState.density = density;
+      applyDesignTokens();
+      persistState();
+    }
+
+    function updateOrgName(val) {
+      if (!hasPerm(`settings`)) {
+        showBanner(`Permission denied: ${appState.previewRole} cannot rename the organisation.`, `error`);
+        applyDesignTokens();
+        return;
+      }
+      const cleaned = val.trim() || `Meridian`;
+      appState.orgName = cleaned;
+      logAudit(`Configuration`, `Organisation Renamed`, `Display name updated to ${cleaned}`);
+      applyDesignTokens();
+      renderAuditTable();
+      renderOverview();
+      persistState();
+    }
+
+    function toggleSecuritySetting(key) {
+      if (!hasPerm(`settings`)) {
+        showBanner(`Permission denied: ${appState.previewRole} cannot change security policies.`, `error`);
+        return;
+      }
+      appState.security[key] = !appState.security[key];
+      logAudit(`Configuration`, `Security Policy Toggled`, `${key} set to ${appState.security[key] ? `Enabled` : `Disabled`}`);
+      applyDesignTokens();
+      renderAll();
+      persistState();
+    }
+
+    function setPreviewRole(role) {
+      appState.previewRole = role;
+      const selectEl = document.getElementById(`role-impersonation-select`);
+      if (selectEl) selectEl.value = role;
+
+      const banner = document.getElementById(`impersonation-banner`);
+      const label = document.getElementById(`impersonation-role-label`);
+      if (banner && label) {
+        label.textContent = role;
+        banner.classList.toggle(`is-visible`, role !== `Super Admin`);
+      }
+
+      renderAll();
+      persistState();
+    }
+
+    // -------------------------------------------------------------------------
+    // 4. Overview & Analytics (KPIs + Chart.js)
+    // -------------------------------------------------------------------------
+    function getToken(name) {
+      return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    }
+
+    function renderOverview() {
+      const totalUsers = appState.users.length;
+      const mfaCount = appState.users.filter(function(u) { return u.mfa === `Enabled`; }).length;
+      const mfaPct = totalUsers ? Math.round((mfaCount / totalUsers) * 100) : 0;
+
+      const showFin = hasPerm(`financials`);
+      const totalDeals = appState.deals.length;
+      const totalPipeline = appState.deals.reduce(function(sum, d) { return sum + (Number(d.value) || 0); }, 0);
+      const wonTotal = appState.deals
+        .filter(function(d) { return d.stage === `Closed Won`; })
+        .reduce(function(sum, d) { return sum + (Number(d.value) || 0); }, 0);
+      const wonPct = totalPipeline ? Math.round((wonTotal / totalPipeline) * 100) : 0;
+
+      const kpiUsers = document.getElementById(`kpi-users-count`);
+      const kpiMfa = document.getElementById(`kpi-mfa-rate`);
+      const kpiPipe = document.getElementById(`kpi-pipeline-value`);
+      const kpiDeals = document.getElementById(`kpi-deals-count`);
+      const kpiWon = document.getElementById(`kpi-won-value`);
+      const kpiWonShare = document.getElementById(`kpi-won-share`);
+      const kpiAudit = document.getElementById(`kpi-audit-count`);
+
+      if (kpiUsers) kpiUsers.textContent = String(totalUsers);
+      if (kpiMfa) kpiMfa.textContent = `${mfaPct}% MFA verified (${mfaCount}/${totalUsers})`;
+      if (kpiPipe) kpiPipe.textContent = showFin ? formatGBP(totalPipeline) : `Restricted`;
+      if (kpiDeals) kpiDeals.textContent = `${totalDeals} active platform records`;
+      if (kpiWon) kpiWon.textContent = showFin ? formatGBP(wonTotal) : `Restricted`;
+      if (kpiWonShare) kpiWonShare.textContent = showFin ? `${wonPct}% of pipeline` : `Financial permission required`;
+      if (kpiAudit) kpiAudit.textContent = String(appState.audit.length);
+
+      // Update sidebar counts
+      const navUsers = document.getElementById(`nav-count-users`);
+      const navDeals = document.getElementById(`nav-count-deals`);
+      const navAudit = document.getElementById(`nav-count-audit`);
+      if (navUsers) navUsers.textContent = String(totalUsers);
+      if (navDeals) navDeals.textContent = String(totalDeals);
+      if (navAudit) navAudit.textContent = String(appState.audit.length);
+
+      // Recent Audit List
+      const auditList = document.getElementById(`overview-audit-list`);
+      if (auditList) {
+        const recent = appState.audit.slice(0, 5);
+        auditList.innerHTML = recent.map(function(ev) {
+          return `
+            <li>
+              <div>
+                <strong>${escapeHtml(ev.action)}</strong>
+                <div class="helper-text">${escapeHtml(ev.detail)}</div>
+              </div>
+              <span class="label" style="white-space:nowrap;">${escapeHtml(ev.timestamp)}</span>
+            </li>
+          `;
+        }).join(``);
+      }
+
+      // Security Posture List
+      const secList = document.getElementById(`overview-security-list`);
+      if (secList) {
+        const items = [
+          { name: `Admin MFA Policy`, state: appState.security.enforceMfa ? `Enforced` : `Optional`, ok: appState.security.enforceMfa },
+          { name: `Strict RBAC UI Guards`, state: appState.security.strictRbac ? `Active` : `Bypassed`, ok: appState.security.strictRbac },
+          { name: `Automated Audit Logging`, state: appState.security.autoAudit ? `Recording` : `Paused`, ok: appState.security.autoAudit },
+          { name: `Parameterised Queries & CSRF`, state: `Standard Enabled`, ok: true }
+        ];
+        secList.innerHTML = items.map(function(item) {
+          const tagCls = item.ok ? `tag tag-pos` : `tag tag-warn`;
+          return `
+            <li>
+              <span>${escapeHtml(item.name)}</span>
+              <span class="${tagCls}">${escapeHtml(item.state)}</span>
+            </li>
+          `;
+        }).join(``);
+      }
+
+      updateCharts();
+    }
+
+    function updateCharts() {
+      if (typeof Chart === `undefined`) return;
+
+      const c1 = getToken(`--data-1`) || `#0f62fe`;
+      const c2 = getToken(`--data-2`) || `#6929c4`;
+      const c3 = getToken(`--data-3`) || `#005d5d`;
+      const c4 = getToken(`--data-4`) || `#9f1853`;
+      const gridColor = getToken(`--outline-variant`) || `#e0e0e0`;
+      const textColor = getToken(`--on-surface-variant`) || `#525252`;
+      const surfaceColor = getToken(`--background`) || `#ffffff`;
+      const onSurface = getToken(`--on-surface`) || `#161616`;
+
+      // 1. Pipeline Chart
+      const modeEl = document.getElementById(`chart-metric-mode`);
+      const mode = modeEl ? modeEl.value : `stage`;
+      const pipeCanvas = document.getElementById(`pipeline-chart`);
+      if (pipeCanvas) {
+        let labels = [];
+        let values = [];
+        let colours = [c1, c2, c3, c4];
+
+        if (mode === `stage`) {
+          labels = [`Discovery`, `Proposal`, `Negotiation`, `Closed Won`];
+        } else {
+          labels = [`Open Source`, `Source-Available`, `Proprietary`];
+          colours = [c1, c3, c4];
+        }
+
+        values = labels.map(function(lbl) {
+          return appState.deals
+            .filter(function(d) { return (mode === `stage` ? d.stage : d.licence) === lbl; })
+            .reduce(function(acc, d) { return acc + (Number(d.value) || 0); }, 0);
+        });
+
+        if (pipelineChartInstance) {
+          pipelineChartInstance.destroy();
+        }
+        pipelineChartInstance = new Chart(pipeCanvas.getContext(`2d`), {
+          type: `bar`,
+          data: {
+            labels: labels,
+            datasets: [{
+              label: `Pipeline Value (£)`,
+              data: values,
+              backgroundColor: colours,
+              borderRadius: 0,
+              barPercentage: 0.65
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: surfaceColor,
+                titleColor: onSurface,
+                bodyColor: onSurface,
+                borderColor: gridColor,
+                borderWidth: 1,
+                cornerRadius: 0,
+                callbacks: {
+                  label: function(ctx) {
+                    return hasPerm(`financials`) ? `Value: ` + formatGBP(ctx.raw) : `Value: Restricted`;
+                  }
+                }
+              }
+            },
+            scales: {
+              x: {
+                grid: { display: false },
+                ticks: { color: textColor, font: { family: `'IBM Plex Mono', monospace`, size: 11 } }
+              },
+              y: {
+                beginAtZero: true,
+                grid: { color: gridColor },
+                ticks: {
+                  color: textColor,
+                  font: { family: `'IBM Plex Mono', monospace`, size: 11 },
+                  callback: function(val) {
+                    return hasPerm(`financials`) ? `£` + (val / 1000) + `k` : `—`;
+                  }
+                }
+              }
+            }
+          }
+        });
+      }
+
+      // 2. Roles Distribution Chart
+      const rolesCanvas = document.getElementById(`roles-chart`);
+      if (rolesCanvas) {
+        const roleCounts = ROLES.map(function(role) {
+          return appState.users.filter(function(u) { return u.role === role; }).length;
+        });
+
+        if (rolesChartInstance) {
+          rolesChartInstance.destroy();
+        }
+        rolesChartInstance = new Chart(rolesCanvas.getContext(`2d`), {
+          type: `doughnut`,
+          data: {
+            labels: ROLES,
+            datasets: [{
+              data: roleCounts,
+              backgroundColor: [c1, c2, c3, c4, getToken(`--data-context`) || `#8d8d8d`],
+              borderColor: surfaceColor,
+              borderWidth: 2
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: `62%`,
+            plugins: {
+              legend: {
+                position: `bottom`,
+                labels: {
+                  color: textColor,
+                  boxWidth: 12,
+                  padding: 14,
+                  font: { family: `'IBM Plex Mono', monospace`, size: 11 }
+                }
+              },
+              tooltip: {
+                backgroundColor: surfaceColor,
+                titleColor: onSurface,
+                bodyColor: onSurface,
+                borderColor: gridColor,
+                borderWidth: 1,
+                cornerRadius: 0
+              }
+            }
+          }
+        });
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // 5. Users & RBAC CRUD
+    // -------------------------------------------------------------------------
+    function toggleAddUserForm() {
+      if (!hasPerm(`manageUsers`)) {
+        showBanner(`Permission denied: ${appState.previewRole} does not have user management privileges.`, `error`);
+        return;
+      }
+      const panel = document.getElementById(`add-user-panel`);
+      if (panel) panel.classList.toggle(`is-open`);
+    }
+
+    function closeUserForm() {
+      const panel = document.getElementById(`add-user-panel`);
+      if (panel) panel.classList.remove(`is-open`);
+      clearUserFormErrors();
+    }
+
+    function clearUserFormErrors() {
+      const nErr = document.getElementById(`user-name-error`);
+      const eErr = document.getElementById(`user-email-error`);
+      const nIn = document.getElementById(`user-name-input`);
+      const eIn = document.getElementById(`user-email-input`);
+      if (nErr) nErr.textContent = ``;
+      if (eErr) eErr.textContent = ``;
+      if (nIn) nIn.classList.remove(`is-error`);
+      if (eIn) eIn.classList.remove(`is-error`);
+    }
+
+    function saveUserForm() {
+      if (!hasPerm(`manageUsers`)) {
+        showBanner(`Permission denied: cannot add users under ${appState.previewRole}.`, `error`);
+        return;
+      }
+      clearUserFormErrors();
+      const nameEl = document.getElementById(`user-name-input`);
+      const emailEl = document.getElementById(`user-email-input`);
+      const roleEl = document.getElementById(`user-role-input`);
+      const deptEl = document.getElementById(`user-dept-input`);
+      const mfaEl = document.getElementById(`user-mfa-input`);
+
+      const name = nameEl ? nameEl.value.trim() : ``;
+      const email = emailEl ? emailEl.value.trim() : ``;
+      const role = roleEl ? roleEl.value : `Editor`;
+      const dept = deptEl && deptEl.value.trim() ? deptEl.value.trim() : `Operations`;
+      const mfa = mfaEl ? mfaEl.value : `Enabled`;
+
+      let valid = true;
+      if (name.length < 2) {
+        const err = document.getElementById(`user-name-error`);
+        if (err) err.textContent = `Enter a full name (at least 2 characters).`;
+        if (nameEl) nameEl.classList.add(`is-error`);
+        valid = false;
+      }
+      if (!email || email.indexOf(`@`) === -1) {
+        const err = document.getElementById(`user-email-error`);
+        if (err) err.textContent = `Enter a valid work email address.`;
+        if (emailEl) emailEl.classList.add(`is-error`);
+        valid = false;
+      }
+      if (!valid) return;
+
+      const newId = `USR-${101 + appState.users.length + Math.floor(Math.random() * 50)}`;
+      appState.users.unshift({
+        id: newId,
+        name: name,
+        email: email,
+        role: role,
+        dept: dept,
+        mfa: mfa,
+        status: `Active`,
+        lastActive: formatUkTimestamp()
+      });
+
+      logAudit(`Access & Auth`, `User Created`, `Added ${name} (${role}) to directory`);
+      if (nameEl) nameEl.value = ``;
+      if (emailEl) emailEl.value = ``;
+      if (deptEl) deptEl.value = ``;
+      closeUserForm();
+      showBanner(`Created user ${name} (${role}).`, `success`);
+      renderAll();
+      persistState();
+    }
+
+    function sortUsers(field) {
+      if (userSort.field === field) {
+        userSort.asc = !userSort.asc;
+      } else {
+        userSort.field = field;
+        userSort.asc = true;
+      }
+      renderUsersTable();
+    }
+
+    function renderUsersTable() {
+      const tbody = document.getElementById(`users-tbody`);
+      if (!tbody) return;
+
+      const q = (document.getElementById(`user-search`) ? document.getElementById(`user-search`).value : ``).toLowerCase().trim();
+      const roleFilter = document.getElementById(`user-role-filter`) ? document.getElementById(`user-role-filter`).value : `all`;
+      const mfaFilter = document.getElementById(`user-mfa-filter`) ? document.getElementById(`user-mfa-filter`).value : `all`;
+
+      const filtered = appState.users.filter(function(u) {
+        const matchesQ = !q || u.name.toLowerCase().indexOf(q) !== -1 || u.email.toLowerCase().indexOf(q) !== -1 || u.dept.toLowerCase().indexOf(q) !== -1;
+        const matchesRole = roleFilter === `all` || u.role === roleFilter;
+        const matchesMfa = mfaFilter === `all` || u.mfa === mfaFilter;
+        return matchesQ && matchesRole && matchesMfa;
+      });
+
+      filtered.sort(function(a, b) {
+        const valA = String(a[userSort.field] || ``).toLowerCase();
+        const valB = String(b[userSort.field] || ``).toLowerCase();
+        if (valA < valB) return userSort.asc ? -1 : 1;
+        if (valA > valB) return userSort.asc ? 1 : -1;
+        return 0;
+      });
+
+      const canManage = hasPerm(`manageUsers`);
+      const canDelete = hasPerm(`delete`);
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7">
+              <div class="empty-state">
+                <strong>No team members match the current filters</strong>
+                <span class="helper-text">Clear your search query or reset role filters to inspect the full directory.</span>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="resetUserFilters()">Reset filters</button>
+              </div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(function(u) {
+        const isEdit = editingUserId === u.id;
+        const mfaTag = u.mfa === `Enabled` ? `tag tag-pos tag-btn` : `tag tag-warn tag-btn`;
+        const statusTag = u.status === `Active` ? `tag tag-pos tag-btn` : `tag tag-err tag-btn`;
+
+        if (isEdit) {
+          const roleOpts = ROLES.map(function(r) {
+            return `<option value="${escapeHtml(r)}"${u.role === r ? ` selected` : ``}>${escapeHtml(r)}</option>`;
+          }).join(``);
+          return `
+            <tr class="is-editing">
+              <td>
+                <input type="text" class="cell-input" id="edit-user-name-${u.id}" value="${escapeHtml(u.name)}" aria-label="Edit user name">
+                <input type="email" class="cell-input" id="edit-user-email-${u.id}" value="${escapeHtml(u.email)}" aria-label="Edit user email" style="margin-top:4px;">
+              </td>
+              <td>
+                <select class="cell-select" id="edit-user-role-${u.id}" aria-label="Edit user role">${roleOpts}</select>
+              </td>
+              <td>
+                <input type="text" class="cell-input" id="edit-user-dept-${u.id}" value="${escapeHtml(u.dept)}" aria-label="Edit department">
+              </td>
+              <td><span class="${mfaTag}">${escapeHtml(u.mfa)}</span></td>
+              <td><span class="${statusTag}">${escapeHtml(u.status)}</span></td>
+              <td class="label">${escapeHtml(u.lastActive)}</td>
+              <td class="num-col">
+                <div class="btn-row" style="justify-content:flex-end;">
+                  <button type="button" class="btn btn-primary btn-sm" onclick="commitUserEdit('${u.id}')">Save</button>
+                  <button type="button" class="btn btn-ghost btn-sm" onclick="cancelUserEdit()">Cancel</button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }
+
+        return `
+          <tr>
+            <td>
+              <div><strong>${escapeHtml(u.name)}</strong></div>
+              <div class="helper-text">${escapeHtml(u.email)}</div>
+            </td>
+            <td><span class="tag tag-neutral">${escapeHtml(u.role)}</span></td>
+            <td>${escapeHtml(u.dept)}</td>
+            <td>
+              <button type="button" class="${mfaTag}" ${canManage ? `` : `disabled`} onclick="toggleUserMfa('${u.id}')" title="Toggle MFA status">
+                ${escapeHtml(u.mfa)}
+              </button>
+            </td>
+            <td>
+              <button type="button" class="${statusTag}" ${canManage ? `` : `disabled`} onclick="toggleUserStatus('${u.id}')" title="Toggle account status">
+                ${escapeHtml(u.status)}
+              </button>
+            </td>
+            <td style="font-family:var(--font-label); font-size:0.75rem; color:var(--on-surface-variant);">${escapeHtml(u.lastActive)}</td>
+            <td class="num-col">
+              <div class="btn-row" style="justify-content:flex-end;">
+                <button type="button" class="btn btn-ghost btn-sm" ${canManage ? `` : `disabled`} onclick="startUserEdit('${u.id}')">Edit</button>
+                <button type="button" class="btn btn-danger btn-sm" ${canDelete && canManage ? `` : `disabled`} onclick="deleteUser('${u.id}', this)">Delete</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join(``);
+    }
+
+    function resetUserFilters() {
+      const s = document.getElementById(`user-search`);
+      const rf = document.getElementById(`user-role-filter`);
+      const mf = document.getElementById(`user-mfa-filter`);
+      if (s) s.value = ``;
+      if (rf) rf.value = `all`;
+      if (mf) mf.value = `all`;
+      renderUsersTable();
+    }
+
+    function startUserEdit(id) {
+      if (!hasPerm(`manageUsers`)) return;
+      editingUserId = id;
+      renderUsersTable();
+    }
+
+    function cancelUserEdit() {
+      editingUserId = null;
+      renderUsersTable();
+    }
+
+    function commitUserEdit(id) {
+      const user = appState.users.find(function(u) { return u.id === id; });
+      if (!user) return;
+      const nEl = document.getElementById(`edit-user-name-${id}`);
+      const eEl = document.getElementById(`edit-user-email-${id}`);
+      const rEl = document.getElementById(`edit-user-role-${id}`);
+      const dEl = document.getElementById(`edit-user-dept-${id}`);
+
+      const newName = nEl ? nEl.value.trim() : user.name;
+      const newEmail = eEl ? eEl.value.trim() : user.email;
+      const newRole = rEl ? rEl.value : user.role;
+      const newDept = dEl ? dEl.value.trim() : user.dept;
+
+      if (!newName || !newEmail) {
+        showBanner(`Name and email cannot be empty.`, `error`);
+        return;
+      }
+
+      user.name = newName;
+      user.email = newEmail;
+      user.role = newRole;
+      user.dept = newDept;
+      user.lastActive = formatUkTimestamp();
+      editingUserId = null;
+
+      logAudit(`Access & Auth`, `User Updated`, `Updated ${user.name} (${user.role})`);
+      showBanner(`Saved changes for ${user.name}.`, `success`);
+      renderAll();
+      persistState();
+    }
+
+    function toggleUserMfa(id) {
+      if (!hasPerm(`manageUsers`)) return;
+      const user = appState.users.find(function(u) { return u.id === id; });
+      if (!user) return;
+      user.mfa = user.mfa === `Enabled` ? `Pending` : `Enabled`;
+      logAudit(`Access & Auth`, `MFA Status Changed`, `${user.name} MFA set to ${user.mfa}`);
+      renderAll();
+      persistState();
+    }
+
+    function toggleUserStatus(id) {
+      if (!hasPerm(`manageUsers`)) return;
+      const user = appState.users.find(function(u) { return u.id === id; });
+      if (!user) return;
+      user.status = user.status === `Active` ? `Suspended` : `Active`;
+      logAudit(`Access & Auth`, `Account Status Changed`, `${user.name} set to ${user.status}`);
+      renderAll();
+      persistState();
+    }
+
+    function deleteUser(id, btn) {
+      if (!hasPerm(`manageUsers`) || !hasPerm(`delete`)) return;
+      if (btn && btn.dataset.armed !== `true`) {
+        btn.dataset.armed = `true`;
+        btn.classList.add(`is-armed`);
+        btn.textContent = `Confirm?`;
+        return;
+      }
+      const target = appState.users.find(function(u) { return u.id === id; });
+      appState.users = appState.users.filter(function(u) { return u.id !== id; });
+      logAudit(`Access & Auth`, `User Removed`, `Removed ${target ? target.name : id} from directory`);
+      showBanner(`Removed user from directory.`, `success`);
+      renderAll();
+      persistState();
+    }
+
+    function renderRbacMatrix() {
+      const tbody = document.getElementById(`rbac-tbody`);
+      if (!tbody) return;
+      const canEditMatrix = hasPerm(`settings`) || appState.previewRole === `Super Admin`;
+
+      tbody.innerHTML = ROLES.map(function(role) {
+        const isLockedRole = role === `Super Admin`;
+        const perms = appState.permissions[role] || {};
+        const cells = PERMISSION_KEYS.map(function(p) {
+          const checked = perms[p.key] ? `checked` : ``;
+          const disabled = isLockedRole || !canEditMatrix ? `disabled` : ``;
+          return `
+            <td>
+              <input type="checkbox" ${checked} ${disabled} aria-label="${escapeHtml(role)} ${escapeHtml(p.label)}" onchange="toggleRbacPerm('${escapeHtml(role)}', '${p.key}', this.checked)">
+            </td>
+          `;
+        }).join(``);
+        return `
+          <tr>
+            <td><strong>${escapeHtml(role)}</strong></td>
+            ${cells}
+          </tr>
+        `;
+      }).join(``);
+    }
+
+    function toggleRbacPerm(role, permKey, isChecked) {
+      if (!hasPerm(`settings`) && appState.previewRole !== `Super Admin`) {
+        showBanner(`Permission denied: cannot modify RBAC policies.`, `error`);
+        renderRbacMatrix();
+        return;
+      }
+      if (!appState.permissions[role]) appState.permissions[role] = {};
+      appState.permissions[role][permKey] = isChecked;
+      logAudit(`Access & Auth`, `RBAC Policy Updated`, `${role} · ${permKey} set to ${isChecked ? `Allowed` : `Restricted`}`);
+      renderAll();
+      persistState();
+    }
+
+    // -------------------------------------------------------------------------
+    // 6. Platforms & Deals CRUD
+    // -------------------------------------------------------------------------
+    function toggleAddDealForm() {
+      if (!hasPerm(`create`)) {
+        showBanner(`Permission denied: ${appState.previewRole} cannot create records.`, `error`);
+        return;
+      }
+      const panel = document.getElementById(`add-deal-panel`);
+      if (panel) panel.classList.toggle(`is-open`);
+    }
+
+    function closeDealForm() {
+      const panel = document.getElementById(`add-deal-panel`);
+      if (panel) panel.classList.remove(`is-open`);
+    }
+
+    function saveNewDeal() {
+      if (!hasPerm(`create`)) {
+        showBanner(`Permission denied: cannot create records under ${appState.previewRole}.`, `error`);
+        return;
+      }
+      const pEl = document.getElementById(`deal-platform-input`);
+      const sEl = document.getElementById(`deal-stack-input`);
+      const lEl = document.getElementById(`deal-licence-input`);
+      const stEl = document.getElementById(`deal-stage-input`);
+      const vEl = document.getElementById(`deal-value-input`);
+      const oEl = document.getElementById(`deal-owner-input`);
+
+      const pErr = document.getElementById(`deal-platform-error`);
+      const vErr = document.getElementById(`deal-value-error`);
+      if (pErr) pErr.textContent = ``;
+      if (vErr) vErr.textContent = ``;
+      if (pEl) pEl.classList.remove(`is-error`);
+      if (vEl) vEl.classList.remove(`is-error`);
+
+      const platform = pEl ? pEl.value.trim() : ``;
+      const stack = sEl && sEl.value.trim() ? sEl.value.trim() : `TypeScript · API`;
+      const licence = lEl ? lEl.value : `Open Source`;
+      const stage = stEl ? stEl.value : `Discovery`;
+      const value = vEl ? Number(vEl.value) : 0;
+      const owner = oEl && oEl.value.trim() ? oEl.value.trim() : `Eleanor Vance`;
+
+      let ok = true;
+      if (platform.length < 2) {
+        if (pErr) pErr.textContent = `Enter a platform or client name.`;
+        if (pEl) pEl.classList.add(`is-error`);
+        ok = false;
+      }
+      if (isNaN(value) || value < 0) {
+        if (vErr) vErr.textContent = `Enter a valid non-negative GBP value.`;
+        if (vEl) vEl.classList.add(`is-error`);
+        ok = false;
+      }
+      if (!ok) return;
+
+      const newId = `CMS-${201 + appState.deals.length + Math.floor(Math.random() * 50)}`;
+      appState.deals.unshift({
+        id: newId,
+        platform: platform,
+        stack: stack,
+        licence: licence,
+        stage: stage,
+        owner: owner,
+        value: value
+      });
+
+      logAudit(`Data CRUD`, `Platform Record Created`, `Added ${platform} (${stage}, ${formatGBP(value)})`);
+      if (pEl) pEl.value = ``;
+      if (sEl) sEl.value = ``;
+      if (oEl) oEl.value = ``;
+      closeDealForm();
+      showBanner(`Added ${platform} to registry.`, `success`);
+      renderAll();
+      persistState();
+    }
+
+    function sortDeals(field) {
+      if (dealSort.field === field) {
+        dealSort.asc = !dealSort.asc;
+      } else {
+        dealSort.field = field;
+        dealSort.asc = field === `value` ? false : true;
+      }
+      renderDealsTable();
+    }
+
+    function renderDealsTable() {
+      const tbody = document.getElementById(`deals-tbody`);
+      if (!tbody) return;
+
+      const q = (document.getElementById(`deal-search`) ? document.getElementById(`deal-search`).value : ``).toLowerCase().trim();
+      const licFilter = document.getElementById(`deal-licence-filter`) ? document.getElementById(`deal-licence-filter`).value : `all`;
+      const stageFilter = document.getElementById(`deal-stage-filter`) ? document.getElementById(`deal-stage-filter`).value : `all`;
+
+      const filtered = appState.deals.filter(function(d) {
+        const matchesQ = !q || d.platform.toLowerCase().indexOf(q) !== -1 || d.stack.toLowerCase().indexOf(q) !== -1 || d.owner.toLowerCase().indexOf(q) !== -1;
+        const matchesLic = licFilter === `all` || d.licence === licFilter;
+        const matchesStage = stageFilter === `all` || d.stage === stageFilter;
+        return matchesQ && matchesLic && matchesStage;
+      });
+
+      filtered.sort(function(a, b) {
+        if (dealSort.field === `value`) {
+          return dealSort.asc ? a.value - b.value : b.value - a.value;
+        }
+        const valA = String(a[dealSort.field] || ``).toLowerCase();
+        const valB = String(b[dealSort.field] || ``).toLowerCase();
+        if (valA < valB) return dealSort.asc ? -1 : 1;
+        if (valA > valB) return dealSort.asc ? 1 : -1;
+        return 0;
+      });
+
+      const canEdit = hasPerm(`edit`);
+      const canDelete = hasPerm(`delete`);
+      const showFin = hasPerm(`financials`);
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7">
+              <div class="empty-state">
+                <strong>No platform records match your filter criteria</strong>
+                <span class="helper-text">Adjust the stage or licence filters, or add a new platform entry.</span>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="resetDealFilters()">Reset filters</button>
+              </div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(function(d) {
+        const isEdit = editingDealId === d.id;
+        const licCls = d.licence === `Open Source` ? `tag tag-pos` : d.licence === `Source-Available` ? `tag tag-warn` : `tag tag-err`;
+        const stageCls = d.stage === `Closed Won` ? `tag tag-pos` : d.stage === `Negotiation` ? `tag` : `tag tag-neutral`;
+
+        if (isEdit) {
+          const licOpts = [`Open Source`, `Source-Available`, `Proprietary`].map(function(l) {
+            return `<option value="${l}"${d.licence === l ? ` selected` : ``}>${l}</option>`;
+          }).join(``);
+          const stageOpts = [`Discovery`, `Proposal`, `Negotiation`, `Closed Won`].map(function(s) {
+            return `<option value="${s}"${d.stage === s ? ` selected` : ``}>${s}</option>`;
+          }).join(``);
+          return `
+            <tr class="is-editing">
+              <td><input type="text" class="cell-input" id="edit-deal-platform-${d.id}" value="${escapeHtml(d.platform)}" aria-label="Edit platform name"></td>
+              <td><input type="text" class="cell-input" id="edit-deal-stack-${d.id}" value="${escapeHtml(d.stack)}" aria-label="Edit stack"></td>
+              <td><select class="cell-select" id="edit-deal-licence-${d.id}" aria-label="Edit licence">${licOpts}</select></td>
+              <td><select class="cell-select" id="edit-deal-stage-${d.id}" aria-label="Edit stage">${stageOpts}</select></td>
+              <td><input type="text" class="cell-input" id="edit-deal-owner-${d.id}" value="${escapeHtml(d.owner)}" aria-label="Edit lead handler"></td>
+              <td class="num-col"><input type="number" class="cell-input" id="edit-deal-value-${d.id}" value="${Number(d.value)}" min="0" step="500" aria-label="Edit value in GBP"></td>
+              <td class="num-col">
+                <div class="btn-row" style="justify-content:flex-end;">
+                  <button type="button" class="btn btn-primary btn-sm" onclick="commitDealEdit('${d.id}')">Save</button>
+                  <button type="button" class="btn btn-ghost btn-sm" onclick="cancelDealEdit()">Cancel</button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }
+
+        return `
+          <tr>
+            <td><strong>${escapeHtml(d.platform)}</strong></td>
+            <td>${escapeHtml(d.stack)}</td>
+            <td><span class="${licCls}">${escapeHtml(d.licence)}</span></td>
+            <td><span class="${stageCls}">${escapeHtml(d.stage)}</span></td>
+            <td>${escapeHtml(d.owner)}</td>
+            <td class="num-col">${showFin ? formatGBP(d.value) : `Restricted`}</td>
+            <td class="num-col">
+              <div class="btn-row" style="justify-content:flex-end;">
+                <button type="button" class="btn btn-ghost btn-sm" ${canEdit ? `` : `disabled`} onclick="startDealEdit('${d.id}')">Edit</button>
+                <button type="button" class="btn btn-danger btn-sm" ${canDelete ? `` : `disabled`} onclick="deleteDeal('${d.id}', this)">Delete</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join(``);
+    }
+
+    function resetDealFilters() {
+      const s = document.getElementById(`deal-search`);
+      const lf = document.getElementById(`deal-licence-filter`);
+      const sf = document.getElementById(`deal-stage-filter`);
+      if (s) s.value = ``;
+      if (lf) lf.value = `all`;
+      if (sf) sf.value = `all`;
+      renderDealsTable();
+    }
+
+    function startDealEdit(id) {
+      if (!hasPerm(`edit`)) return;
+      editingDealId = id;
+      renderDealsTable();
+    }
+
+    function cancelDealEdit() {
+      editingDealId = null;
+      renderDealsTable();
+    }
+
+    function commitDealEdit(id) {
+      const deal = appState.deals.find(function(d) { return d.id === id; });
+      if (!deal) return;
+
+      const pEl = document.getElementById(`edit-deal-platform-${id}`);
+      const sEl = document.getElementById(`edit-deal-stack-${id}`);
+      const lEl = document.getElementById(`edit-deal-licence-${id}`);
+      const stEl = document.getElementById(`edit-deal-stage-${id}`);
+      const oEl = document.getElementById(`edit-deal-owner-${id}`);
+      const vEl = document.getElementById(`edit-deal-value-${id}`);
+
+      deal.platform = pEl && pEl.value.trim() ? pEl.value.trim() : deal.platform;
+      deal.stack = sEl && sEl.value.trim() ? sEl.value.trim() : deal.stack;
+      deal.licence = lEl ? lEl.value : deal.licence;
+      deal.stage = stEl ? stEl.value : deal.stage;
+      deal.owner = oEl && oEl.value.trim() ? oEl.value.trim() : deal.owner;
+      deal.value = vEl && !isNaN(Number(vEl.value)) ? Math.max(0, Number(vEl.value)) : deal.value;
+
+      editingDealId = null;
+      logAudit(`Data CRUD`, `Platform Updated`, `Updated ${deal.platform} (${deal.stage}, ${formatGBP(deal.value)})`);
+      showBanner(`Saved changes for ${deal.platform}.`, `success`);
+      renderAll();
+      persistState();
+    }
+
+    function deleteDeal(id, btn) {
+      if (!hasPerm(`delete`)) return;
+      if (btn && btn.dataset.armed !== `true`) {
+        btn.dataset.armed = `true`;
+        btn.classList.add(`is-armed`);
+        btn.textContent = `Confirm?`;
+        return;
+      }
+      const target = appState.deals.find(function(d) { return d.id === id; });
+      appState.deals = appState.deals.filter(function(d) { return d.id !== id; });
+      logAudit(`Data CRUD`, `Platform Deleted`, `Deleted ${target ? target.platform : id} from pipeline`);
+      showBanner(`Deleted record from registry.`, `success`);
+      renderAll();
+      persistState();
+    }
+
+    // -------------------------------------------------------------------------
+    // 7. Audit Log & Exports
+    // -------------------------------------------------------------------------
+    function renderAuditTable() {
+      const tbody = document.getElementById(`audit-tbody`);
+      if (!tbody) return;
+
+      const q = (document.getElementById(`audit-search`) ? document.getElementById(`audit-search`).value : ``).toLowerCase().trim();
+      const cat = document.getElementById(`audit-category-filter`) ? document.getElementById(`audit-category-filter`).value : `all`;
+
+      const filtered = appState.audit.filter(function(ev) {
+        const matchesQ = !q || ev.action.toLowerCase().indexOf(q) !== -1 || ev.actor.toLowerCase().indexOf(q) !== -1 || ev.detail.toLowerCase().indexOf(q) !== -1;
+        const matchesCat = cat === `all` || ev.category === cat;
+        return matchesQ && matchesCat;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5">
+              <div class="empty-state">
+                <strong>No audit events recorded for this filter</strong>
+                <span class="helper-text">Perform CRUD edits or clear filters to inspect system logs.</span>
+              </div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(function(ev) {
+        const catCls = ev.category === `Access & Auth` ? `tag tag-warn` : ev.category === `Configuration` ? `tag` : `tag tag-pos`;
+        return `
+          <tr>
+            <td style="font-family:var(--font-label); font-size:0.75rem; white-space:nowrap;">${escapeHtml(ev.timestamp)}</td>
+            <td><span class="${catCls}">${escapeHtml(ev.category)}</span></td>
+            <td><strong>${escapeHtml(ev.action)}</strong></td>
+            <td>${escapeHtml(ev.actor)}</td>
+            <td>${escapeHtml(ev.detail)}</td>
+          </tr>
+        `;
+      }).join(``);
+    }
+
+    function clearAuditLog(btn) {
+      if (!hasPerm(`delete`) && appState.previewRole !== `Super Admin`) {
+        showBanner(`Permission denied: ${appState.previewRole} cannot clear audit logs.`, `error`);
+        return;
+      }
+      if (btn && btn.dataset.armed !== `true`) {
+        btn.dataset.armed = `true`;
+        btn.classList.add(`is-armed`);
+        btn.textContent = `Confirm clear?`;
+        return;
+      }
+      btn.dataset.armed = `false`;
+      btn.classList.remove(`is-armed`);
+      btn.textContent = `Clear logs`;
+      appState.audit = [{
+        id: `AUD-RESET`,
+        timestamp: formatUkTimestamp(),
+        category: `Configuration`,
+        action: `Audit Log Cleared`,
+        actor: appState.previewRole,
+        detail: `Previous session log entries cleared by administrator`
+      }];
+      showBanner(`Audit log cleared.`, `success`);
+      renderAll();
+      persistState();
+    }
+
+    function downloadTextFile(content, filename, mimeType) {
+      if (window.notebookAppApi && typeof window.notebookAppApi.triggerFileDownload === `function`) {
+        window.notebookAppApi.triggerFileDownload({
+          content: content,
+          contentType: mimeType,
+          encoding: `UTF-8`,
+          filename: filename
+        });
+      } else {
+        const blob = new Blob([content], { type: mimeType });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement(`a`);
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+    }
+
+    function exportUsersCsv() {
+      const headers = [`ID`, `Name`, `Email`, `Role`, `Department`, `MFA`, `Status`, `Last Active`];
+      const rows = appState.users.map(function(u) {
+        return [u.id, u.name, u.email, u.role, u.dept, u.mfa, u.status, u.lastActive].map(function(v) {
+          return `"` + String(v).replace(/"/g, `""`) + `"`;
+        }).join(`,`);
+      });
+      downloadTextFile(headers.join(`,`) + `\n` + rows.join(`\n`), `meridian-users-rbac.csv`, `text/csv`);
+      logAudit(`Data CRUD`, `CSV Exported`, `Exported ${appState.users.length} user records`);
+      renderAuditTable();
+      renderOverview();
+      persistState();
+    }
+
+    function exportDealsCsv() {
+      const headers = [`ID`, `Platform`, `Stack`, `Licence`, `Stage`, `Lead Handler`, `Value GBP`];
+      const rows = appState.deals.map(function(d) {
+        return [d.id, d.platform, d.stack, d.licence, d.stage, d.owner, hasPerm(`financials`) ? d.value : `Restricted`].map(function(v) {
+          return `"` + String(v).replace(/"/g, `""`) + `"`;
+        }).join(`,`);
+      });
+      downloadTextFile(headers.join(`,`) + `\n` + rows.join(`\n`), `meridian-platforms-deals.csv`, `text/csv`);
+      logAudit(`Data CRUD`, `CSV Exported`, `Exported ${appState.deals.length} platform deal records`);
+      renderAuditTable();
+      renderOverview();
+      persistState();
+    }
+
+    function exportAuditCsv() {
+      const headers = [`ID`, `Timestamp`, `Category`, `Action`, `Actor`, `Detail`];
+      const rows = appState.audit.map(function(ev) {
+        return [ev.id, ev.timestamp, ev.category, ev.action, ev.actor, ev.detail].map(function(v) {
+          return `"` + String(v).replace(/"/g, `""`) + `"`;
+        }).join(`,`);
+      });
+      downloadTextFile(headers.join(`,`) + `\n` + rows.join(`\n`), `meridian-audit-log.csv`, `text/csv`);
+    }
+
+    function exportFullBackup() {
+      downloadTextFile(JSON.stringify(appState, null, 2), `meridian-workspace-backup.json`, `text/plain`);
+      logAudit(`Configuration`, `Backup Exported`, `Downloaded full JSON configuration and CRUD state`);
+      renderAuditTable();
+      renderOverview();
+      persistState();
+    }
+
+    function resetWorkspace(btn) {
+      if (!hasPerm(`settings`)) {
+        showBanner(`Permission denied: ${appState.previewRole} cannot reset workspace defaults.`, `error`);
+        return;
+      }
+      if (btn && btn.dataset.armed !== `true`) {
+        btn.dataset.armed = `true`;
+        btn.classList.add(`is-armed`);
+        btn.textContent = `Confirm reset?`;
+        return;
+      }
+      btn.dataset.armed = `false`;
+      btn.classList.remove(`is-armed`);
+      btn.textContent = `Reset defaults`;
+      appState = getDefaultState();
+      editingUserId = null;
+      editingDealId = null;
+      applyDesignTokens();
+      setPreviewRole(`Super Admin`);
+      showBanner(`Workspace restored to factory defaults.`, `success`);
+      persistState();
+    }
+
+    // -------------------------------------------------------------------------
+    // 8. GitHub Modular Code Explorer
+    // -------------------------------------------------------------------------
+    function getRepoFiles() {
+      const primaryHex = getToken(`--primary`) || `#0f62fe`;
+      const bgHex = getToken(`--background`) || `#ffffff`;
+      const surfHex = getToken(`--surface-container`) || `#f4f4f4`;
+      const radVal = getToken(`--surface-radius`) || `0px`;
+
+      return {
+        readme: {
+          title: `README.md`,
+          meta: `Markdown · GitHub Deployment Guide`,
+          filename: `README.md`,
+          content: `# ${appState.orgName} Admin Console
+
+A modular, designable enterprise admin dashboard featuring interactive CRUD tables, role-based access control (RBAC), live Chart.js analytics, audit logging, and Light/Dark design tokens.
+
+## Project Structure
+
+\`\`\`text
+meridian-admin/
+├── index.html                  # Semantic application shell
+├── README.md                   # Documentation & deployment guide
+└── src/
+    ├── styles/
+    │   ├── tokens.css          # Theme, accent, radius & spacing custom properties
+    │   └── components.css      # Carbon-inspired layers, tables, buttons & grid
+    ├── js/
+    │   └── store.js            # Centralised state, RBAC permissions & CRUD handlers
+    └── react/
+        └── AdminDashboard.tsx  # Optional React + TypeScript component equivalent
+\`\`\`
+
+## Quick Deploy to GitHub Pages
+
+1. Initialise your repository and commit all files:
+   \`\`\`bash
+   git init
+   git add .
+   git commit -m "feat: initialise modular admin dashboard"
+   git branch -M main
+   git push -u origin main
+   \`\`\`
+2. In your GitHub repository, open **Settings -> Pages**, choose **Deploy from a branch** (\`main / root\`), and save.
+
+## Security & Architecture Highlights
+
+- **RBAC Enforcement**: Permissions matrix separates \`Super Admin\`, \`System Administrator\`, \`Editor\`, \`Support Agent\`, and \`Financial Manager\`.
+- **Audit Traceability**: Every create, update, delete, and policy change writes a timestamped UK record.
+- **Design Tokens**: All colours and spacing live in \`src/styles/tokens.css\` for instant white-labelling.`
+        },
+        html: {
+          title: `index.html`,
+          meta: `HTML5 · Semantic Entry Point`,
+          filename: `index.html`,
+          content: `<!DOCTYPE html>
+<html lang="en-GB" data-theme="${appState.theme}" data-accent="${appState.accent}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${appState.orgName} Admin Console</title>
+  <link rel="stylesheet" href="src/styles/tokens.css">
+  <link rel="stylesheet" href="src/styles/components.css">
+</head>
+<body>
+  <div id="app" class="app-shell">
+    <header class="topbar">
+      <div class="brand-block">
+        <h1 class="brand-title">${appState.orgName} <strong>Admin Console</strong></h1>
+        <p class="brand-subtitle">Operations, RBAC, and CMS Pipeline</p>
+      </div>
+      <div class="topbar-controls">
+        <button id="theme-toggle" class="btn btn-secondary">Toggle theme</button>
+      </div>
+    </header>
+    <div class="workspace-grid">
+      <aside class="side-nav" id="sidebar-nav"></aside>
+      <main class="main-canvas" id="main-canvas"></main>
+    </div>
+  </div>
+  <script type="module" src="src/js/store.js"><\/script>
+</body>
+</html>`
+        },
+        tokens: {
+          title: `src/styles/tokens.css`,
+          meta: `CSS Custom Properties · Active Export (${appState.theme} / ${appState.accent})`,
+          filename: `tokens.css`,
+          content: `/* Generated from active Meridian Admin appearance settings */
+:root {
+  color-scheme: ${appState.theme};
+  --background: ${bgHex};
+  --surface-container: ${surfHex};
+  --primary: ${primaryHex};
+  --surface-radius: ${radVal};
+
+  --font-headline: 'IBM Plex Sans', sans-serif;
+  --font-body: 'IBM Plex Sans', sans-serif;
+  --font-label: 'IBM Plex Mono', monospace;
+
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2.5rem;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-micro: 120ms;
+  --dur-short: 220ms;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #161616;
+  --surface-container: #262626;
+  --surface-container-high: #393939;
+  --on-surface: #f4f4f4;
+  --primary: #78a9ff;
+}`
+        },
+        components: {
+          title: `src/styles/components.css`,
+          meta: `CSS Grid & Carbon Component Layer`,
+          filename: `components.css`,
+          content: `.workspace-grid {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+  gap: var(--space-md);
+}
+
+.layer {
+  background-color: var(--surface-container);
+  border-radius: var(--surface-radius);
+  padding: var(--space-md);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table thead th {
+  font-family: var(--font-label);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+@media (max-width: 640px) {
+  .workspace-grid { grid-template-columns: 1fr; }
+}`
+        },
+        store: {
+          title: `src/js/store.js`,
+          meta: `ES Module · State, RBAC & CRUD Operations`,
+          filename: `store.js`,
+          content: `export const state = {
+  theme: '${appState.theme}',
+  accent: '${appState.accent}',
+  previewRole: '${appState.previewRole}',
+  users: ${JSON.stringify(appState.users.slice(0, 2), null, 2)}
+};
+
+export function hasPermission(permissions, role, key) {
+  return Boolean(permissions[role] && permissions[role][key]);
+}
+
+export function createRecord(collection, record, auditLog, actor) {
+  collection.unshift(record);
+  auditLog.unshift({
+    timestamp: new Date().toLocaleString('en-GB'),
+    action: 'Record Created',
+    actor,
+    detail: record.id
+  });
+  return collection;
+}`
+        },
+        react: {
+          title: `src/react/AdminDashboard.tsx`,
+          meta: `React + TypeScript · Modular Component Equivalent`,
+          filename: `AdminDashboard.tsx`,
+          content: `import React, { useState, useMemo } from 'react';
+
+export type Role = 'Super Admin' | 'System Administrator' | 'Editor' | 'Support Agent' | 'Financial Manager';
+
+export interface UserRecord {
+  id: string;
+  name: string;
+  email: string;
+  role: Role;
+  mfa: 'Enabled' | 'Pending';
+  status: 'Active' | 'Suspended';
+}
+
+export const AdminDashboard: React.FC = () => {
+  const [theme, setTheme] = useState<'light' | 'dark'>('${appState.theme}');
+  const [role, setRole] = useState<Role>('${appState.previewRole}');
+  const [users, setUsers] = useState<UserRecord[]>([]);
+
+  const mfaPercentage = useMemo(() => {
+    if (users.length === 0) return 0;
+    const enabled = users.filter((u) => u.mfa === 'Enabled').length;
+    return Math.round((enabled / users.length) * 100);
+  }, [users]);
+
+  const handleDelete = (id: string) => {
+    if (role !== 'Super Admin' && role !== 'System Administrator') return;
+    setUsers((prev) => prev.filter((u) => u.id !== id));
+  };
+
+  return (
+    <div data-theme={theme} className="app-shell">
+      <header className="topbar">
+        <h1>${appState.orgName} Admin Console</h1>
+        <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
+          Switch to {theme === 'light' ? 'Dark' : 'Light'} Mode
+        </button>
+      </header>
+      <main className="main-canvas">
+        <div className="kpi-tile">
+          <span className="label">MFA Verified</span>
+          <strong>{mfaPercentage}%</strong>
+        </div>
+      </main>
+    </div>
+  );
+};`
+        }
+      };
+    }
+
+    function selectRepoFile(key) {
+      currentRepoFile = key;
+      const keys = [`readme`, `html`, `tokens`, `components`, `store`, `react`];
+      for (let i = 0; i < keys.length; i++) {
+        const btn = document.getElementById(`repo-btn-${keys[i]}`);
+        if (btn) btn.classList.toggle(`is-active`, keys[i] === key);
+      }
+      renderRepoCode();
+    }
+
+    function renderRepoCode() {
+      const files = getRepoFiles();
+      const file = files[currentRepoFile] || files.readme;
+      const titleEl = document.getElementById(`repo-file-title`);
+      const metaEl = document.getElementById(`repo-file-meta`);
+      const codeEl = document.getElementById(`repo-code-content`);
+      if (titleEl) titleEl.textContent = file.title;
+      if (metaEl) metaEl.textContent = file.meta;
+      if (codeEl) codeEl.textContent = file.content;
+    }
+
+    function copyCurrentRepoFile() {
+      const files = getRepoFiles();
+      const file = files[currentRepoFile] || files.readme;
+      const lbl = document.getElementById(`copy-file-label`);
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(file.content).then(function() {
+          if (lbl) lbl.textContent = `Copied`;
+          setTimeout(function() { if (lbl) lbl.textContent = `Copy file`; }, 1500);
+        });
+      } else {
+        showBanner(`Clipboard API unavailable in this frame — use Download file instead.`, `error`);
+      }
+    }
+
+    function downloadCurrentRepoFile() {
+      const files = getRepoFiles();
+      const file = files[currentRepoFile] || files.readme;
+      downloadTextFile(file.content, file.filename, `text/plain`);
+      showBanner(`Downloaded ${file.filename}.`, `success`);
+    }
+
+    // -------------------------------------------------------------------------
+    // 9. Master Render & Startup Initialisation
+    // -------------------------------------------------------------------------
+    function refreshIcons() {
+      if (window.lucide && typeof window.lucide.createIcons === `function`) {
+        window.lucide.createIcons();
+      }
+    }
+
+    function renderAll() {
+      applyDesignTokens();
+      renderUsersTable();
+      renderRbacMatrix();
+      renderDealsTable();
+      renderAuditTable();
+      renderOverview();
+      if (currentView === `github`) renderRepoCode();
+      refreshIcons();
+    }
+
+    document.addEventListener(`DOMContentLoaded`, async function() {
+      const statusEl = document.getElementById(`persistence-status`);
+      try {
+        if (window.notebookAppApi && typeof window.notebookAppApi.getAppState === `function`) {
+          const saved = await window.notebookAppApi.getAppState();
+          if (saved && typeof saved === `object` && Array.isArray(saved.users) && Array.isArray(saved.deals)) {
+            appState = Object.assign(getDefaultState(), saved);
+            if (statusEl) statusEl.textContent = `Restored saved workspace`;
+          } else {
+            if (statusEl) statusEl.textContent = `Seeded default workspace`;
+          }
+        } else {
+          if (statusEl) statusEl.textContent = `Session active`;
+        }
+      } catch (err) {
+        if (statusEl) statusEl.textContent = `Default workspace loaded`;
+      }
+
+      const roleSelect = document.getElementById(`role-impersonation-select`);
+      if (roleSelect) roleSelect.value = appState.previewRole || `Super Admin`;
+      const banner = document.getElementById(`impersonation-banner`);
+      const label = document.getElementById(`impersonation-role-label`);
+      if (banner && label) {
+        label.textContent = appState.previewRole;
+        banner.classList.toggle(`is-visible`, appState.previewRole !== `Super Admin`);
+      }
+
+      renderAll();
+
+      if (window.notebookAppApi && typeof window.notebookAppApi.notifyAppReady === `function`) {
+        window.notebookAppApi.notifyAppReady();
+      }
+    });
+  </script>
+</body>
+</html>
